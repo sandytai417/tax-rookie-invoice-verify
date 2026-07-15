@@ -1,0 +1,96 @@
+{
+  "brand": {
+    "title": "Tax Rookie | Invoice Verify",
+    "subtitle": "報稅菜鳥｜發票驗算工具"
+  },
+  "header": {
+    "taxRate": "稅率",
+    "tolerance": "容差",
+    "language": "語言",
+    "theme": "主題",
+    "importExcel": "匯入 Excel"
+  },
+  "summary": {
+    "netTotal": "未稅合計",
+    "taxTotal": "稅額合計",
+    "grossTotal": "含稅合計",
+    "anomalies": "異常筆數"
+  },
+  "grid": {
+    "index": "#",
+    "net": "未稅金額",
+    "tax": "稅額",
+    "gross": "含稅金額",
+    "theoreticalTax": "理論稅額",
+    "difference": "差異",
+    "status": "狀態"
+  },
+  "status": {
+    "exact": "完全一致",
+    "within_tolerance": "容差範圍內",
+    "out_of_tolerance": "超出容差",
+    "incomplete": "資料不足",
+    "empty": "空白"
+  },
+  "tolerance": {
+    "0": "±0",
+    "0.01": "±0.01",
+    "0.5": "±0.5",
+    "1": "±1",
+    "custom": "自訂"
+  },
+  "theme": {
+    "light": "淺色",
+    "dark": "深色",
+    "system": "跟隨系統"
+  },
+  "language": {
+    "en": "English",
+    "zh-TW": "繁體中文"
+  },
+  "import": {
+    "title": "匯入 Excel",
+    "step": "步驟 {current} / {total}",
+    "close": "關閉",
+    "back": "上一步",
+    "next": "下一步",
+    "import": "開始匯入",
+    "selectFileTitle": "選擇 Excel 檔案",
+    "selectFileDesc": "支援 .xlsx、.xls。檔案只在瀏覽器本機讀取。",
+    "chooseFile": "選擇 Excel 檔案",
+    "selectSheetTitle": "選擇工作表",
+    "fileLabel": "檔案",
+    "previewTitle": "資料預覽",
+    "sheetLabel": "工作表",
+    "mappingTitle": "欄位對應",
+    "mappingDesc": "請手動指定欄位，系統不會自動辨識。",
+    "notSpecified": "（不指定）",
+    "confirmTitle": "確認匯入",
+    "errors": {
+      "noSheets": "找不到可讀取的工作表。",
+      "readFailed": "無法讀取 Excel 檔案，請確認格式為 .xlsx 或 .xls。",
+      "selectSheet": "請選擇工作表。",
+      "selectField": "請至少指定一個欄位。",
+      "noRows": "沒有可匯入的資料列。"
+    }
+  },
+  "feedback": {
+    "button": "Feedback",
+    "title": "意見回饋",
+    "message": "回饋內容",
+    "email": "Email（選填）",
+    "submit": "送出",
+    "cancel": "取消",
+    "required": "請填寫回饋內容。",
+    "mailtoSubject": "Tax Rookie 發票驗算工具回饋"
+  },
+  "footer": {
+    "privacy": "所有資料只在你的瀏覽器處理，不會上傳或儲存。"
+  },
+  "empty": {
+    "hint": "從 Excel 貼上資料，或匯入檔案開始驗算。"
+  },
+  "units": {
+    "percent": "%"
+  }
+}

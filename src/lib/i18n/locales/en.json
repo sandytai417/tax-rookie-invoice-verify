@@ -1,0 +1,96 @@
+{
+  "brand": {
+    "title": "Tax Rookie | Invoice Verify",
+    "subtitle": "Invoice verification for accountants"
+  },
+  "header": {
+    "taxRate": "Tax Rate",
+    "tolerance": "Tolerance",
+    "language": "Language",
+    "theme": "Theme",
+    "importExcel": "Import Excel"
+  },
+  "summary": {
+    "netTotal": "Net Total",
+    "taxTotal": "Tax Total",
+    "grossTotal": "Gross Total",
+    "anomalies": "Anomalies"
+  },
+  "grid": {
+    "index": "#",
+    "net": "Net Amount",
+    "tax": "Tax Amount",
+    "gross": "Gross Amount",
+    "theoreticalTax": "Theoretical Tax",
+    "difference": "Difference",
+    "status": "Status"
+  },
+  "status": {
+    "exact": "Exact match",
+    "within_tolerance": "Within tolerance",
+    "out_of_tolerance": "Out of tolerance",
+    "incomplete": "Incomplete",
+    "empty": "Empty"
+  },
+  "tolerance": {
+    "0": "±0",
+    "0.01": "±0.01",
+    "0.5": "±0.5",
+    "1": "±1",
+    "custom": "Custom"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "Follow System"
+  },
+  "language": {
+    "en": "English",
+    "zh-TW": "繁體中文"
+  },
+  "import": {
+    "title": "Import Excel",
+    "step": "Step {current} / {total}",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "import": "Import",
+    "selectFileTitle": "Select Excel file",
+    "selectFileDesc": "Supports .xlsx and .xls. Files are processed locally in your browser only.",
+    "chooseFile": "Choose Excel file",
+    "selectSheetTitle": "Select worksheet",
+    "fileLabel": "File",
+    "previewTitle": "Preview data",
+    "sheetLabel": "Worksheet",
+    "mappingTitle": "Column mapping",
+    "mappingDesc": "Specify each field manually. No automatic detection is used.",
+    "notSpecified": "(Not specified)",
+    "confirmTitle": "Confirm import",
+    "errors": {
+      "noSheets": "No readable worksheets found.",
+      "readFailed": "Unable to read the Excel file. Please use .xlsx or .xls.",
+      "selectSheet": "Please select a worksheet.",
+      "selectField": "Please specify at least one field.",
+      "noRows": "No importable rows found."
+    }
+  },
+  "feedback": {
+    "button": "Feedback",
+    "title": "Feedback",
+    "message": "Feedback",
+    "email": "Email (optional)",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "required": "Feedback is required.",
+    "mailtoSubject": "Tax Rookie Invoice Verify Feedback"
+  },
+  "footer": {
+    "privacy": "All data is processed locally in your browser. Nothing is uploaded or stored."
+  },
+  "empty": {
+    "hint": "Paste from Excel or import a file to begin verification."
+  },
+  "units": {
+    "percent": "%"
+  }
+}

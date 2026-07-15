@@ -1,0 +1,366 @@
+@import 'tailwindcss';
+
+:root {
+  --bg: #f0f0f0;
+  --panel: #ffffff;
+  --border: #c8c8c8;
+  --text: #1f1f1f;
+  --muted: #5f5f5f;
+  --accent: #0f6cbd;
+  --accent-hover: #0a5aa3;
+  --header-bg: #f8f8f8;
+  --summary-bg: #ececec;
+  --grid-bg: #ffffff;
+  --danger: #b42318;
+}
+
+html.dark {
+  --bg: #1e1e1e;
+  --panel: #252526;
+  --border: #3f3f46;
+  --text: #f3f3f3;
+  --muted: #b3b3b3;
+  --accent: #4da3ff;
+  --accent-hover: #2f8cf0;
+  --header-bg: #2d2d30;
+  --summary-bg: #2a2a2a;
+  --grid-bg: #1f1f1f;
+  --danger: #ff6b6b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  font-size: 13px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.tool-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 100dvh;
+}
+
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--header-bg);
+  flex-shrink: 0;
+}
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.brand-subtitle {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.control-input {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 2px;
+  padding: 4px 6px;
+  min-height: 28px;
+}
+
+.control-input.narrow {
+  width: 72px;
+}
+
+.btn-primary,
+.btn-ghost {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 5px 10px;
+  min-height: 28px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn-ghost {
+  background: var(--panel);
+  color: var(--text);
+}
+
+.summary-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--summary-bg);
+  flex-shrink: 0;
+}
+
+.summary-anomaly {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.grid-scroll-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.grid-hint {
+  margin: 0;
+  padding: 6px 12px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+  flex-shrink: 0;
+}
+
+.grid-panel {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.grid-loading {
+  border-top: 1px solid var(--border);
+  background: var(--grid-bg);
+}
+
+.app-footer {
+  padding: 6px 12px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  background: var(--header-bg);
+  flex-shrink: 0;
+}
+
+.feedback-button {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 30;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 2px;
+  padding: 6px 10px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 40;
+}
+
+.modal {
+  width: min(900px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 12px;
+}
+
+.modal-small {
+  width: min(420px, 100%);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.modal-header h2,
+.wizard-step h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.wizard-step {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wizard-step p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.wizard-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.upload-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--border);
+  padding: 20px;
+  cursor: pointer;
+  background: var(--header-bg);
+}
+
+.upload-box input {
+  display: none;
+}
+
+.sheet-list,
+.mapping-grid,
+.confirm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sheet-option,
+.mapping-row,
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mapping-row select {
+  width: 100%;
+}
+
+.table-wrap {
+  overflow: auto;
+}
+
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.preview-table th,
+.preview-table td {
+  border: 1px solid var(--border);
+  padding: 4px 6px;
+  white-space: nowrap;
+}
+
+.preview-table th {
+  background: var(--header-bg);
+}
+
+.alert {
+  border: 1px solid #f5a5a5;
+  background: #fff1f1;
+  color: #8f1f1f;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.form-textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 2px;
+  padding: 6px;
+  resize: vertical;
+}
+
+.ag-theme-quartz,
+.ag-theme-quartz-dark {
+  --ag-font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  --ag-font-size: 13px;
+  --ag-grid-size: 4px;
+  --ag-row-height: 28px;
+  --ag-header-height: 30px;
+  --ag-borders: solid 1px;
+  --ag-border-color: var(--border);
+  --ag-background-color: var(--grid-bg);
+  --ag-foreground-color: var(--text);
+  --ag-header-background-color: var(--header-bg);
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .tool-shell {
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .grid-scroll-area {
+    overflow: visible;
+    min-height: 60vh;
+  }
+
+  .grid-panel {
+    min-height: 60vh;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-header {
+    flex-direction: column;
+  }
+
+  .header-controls {
+    width: 100%;
+  }
+}
