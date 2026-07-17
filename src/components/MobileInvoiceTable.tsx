@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useApp } from '@/context/AppContext'
 import { formatAmount } from '@/lib/numbers'
+import { parseClipboardMatrix } from '@/lib/verification'
 import type { ComputedInvoiceRow, EditableInvoiceField } from '@/types'
 
 function parseInput(raw: string): number | null {
@@ -69,8 +70,31 @@ function MobileAmountInput({
 }
 
 export function MobileInvoiceTable() {
-  const { computedRows, translate, locale } = useApp()
+  const { computedRows, translate, locale, applyPaste } = useApp()
   const numberLocale = locale === 'zh-TW' ? 'zh-TW' : 'en-US'
+
+  const handlePaste = useCallback(
+    (event: React.ClipboardEvent<HTMLDivElement>) => {
+      const text = event.clipboardData.getData('text/plain')
+      if (!text.trim()) return
+
+      // If pasting into a focused single input with one value, let the input handle it.
+      const target = event.target
+      if (
+        target instanceof HTMLInputElement &&
+        !text.includes('\t') &&
+        !text.includes('\n')
+      ) {
+        return
+      }
+
+      event.preventDefault()
+      const matrix = parseClipboardMatrix(text)
+      if (matrix.length === 0) return
+      applyPaste(matrix, 1, 'net')
+    },
+    [applyPaste],
+  )
 
   function renderInput(row: ComputedInvoiceRow, field: EditableInvoiceField) {
     if (row.isTotalRow) {
@@ -107,7 +131,7 @@ export function MobileInvoiceTable() {
   }
 
   return (
-    <div className="mobile-table-wrap">
+    <div className="mobile-table-wrap" onPaste={handlePaste}>
       <table className="mobile-table">
         <thead>
           <tr>

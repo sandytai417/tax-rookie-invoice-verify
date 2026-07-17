@@ -9,10 +9,9 @@
     "language": "語言",
     "theme": "主題",
     "importExcel": "匯入 Excel / .xlsx",
-    "pasteClipboard": "從剪貼簿貼上 (Ctrl+V)",
     "customRate": "自訂稅率",
     "customTolerance": "自訂容差",
-    "tip": "請在未稅額、稅額或總價欄位輸入資料，其餘欄位會自動計算。",
+    "tip": "請在未稅額、稅額或總價欄位輸入或直接貼上資料，其餘欄位會自動計算。",
     "pasteEmpty": "剪貼簿沒有可貼上的資料。",
     "pasteFailed": "無法讀取剪貼簿，請改用 Ctrl+V 直接貼到表格。"
   },

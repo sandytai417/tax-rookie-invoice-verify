@@ -9,10 +9,9 @@
     "language": "Language",
     "theme": "Theme",
     "importExcel": "Import Excel / .xlsx",
-    "pasteClipboard": "Paste (Ctrl+V) from Clipboard",
     "customRate": "Custom rate",
     "customTolerance": "Custom",
-    "tip": "Enter data in Net, Tax, or Total columns. Other columns are calculated automatically.",
+    "tip": "Enter or paste data in Net, Tax, or Total columns. Other columns are calculated automatically.",
     "pasteEmpty": "Clipboard is empty.",
     "pasteFailed": "Unable to read clipboard. Paste directly into the grid with Ctrl+V."
   },

@@ -2,21 +2,7 @@
 
 import { useState } from 'react'
 import { useApp } from '@/context/AppContext'
-import { parseClipboardMatrix } from '@/lib/verification'
 import type { Locale, TolerancePreset } from '@/types'
-
-function ClipboardIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-      <rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" strokeWidth="1.8" />
-    </svg>
-  )
-}
 
 function UploadIcon() {
   return (
@@ -52,36 +38,14 @@ export function Header() {
     locale,
     setLocale,
     setImportWizardOpen,
-    applyPaste,
   } = useApp()
-  const [pasteError, setPasteError] = useState('')
   const [forceCustomRate, setForceCustomRate] = useState(false)
   const isCustomRate = forceCustomRate || !RATE_PRESETS.includes(taxRate as 0 | 5 | 10)
-
-  async function handlePasteClick() {
-    setPasteError('')
-    try {
-      const text = await navigator.clipboard.readText()
-      if (!text.trim()) {
-        setPasteError(translate('header.pasteEmpty'))
-        return
-      }
-      const matrix = parseClipboardMatrix(text)
-      if (matrix.length === 0) {
-        setPasteError(translate('header.pasteEmpty'))
-        return
-      }
-      applyPaste(matrix, 1, 'net')
-    } catch {
-      setPasteError(translate('header.pasteFailed'))
-    }
-  }
 
   return (
     <header className="app-header">
       <div className="header-top">
         <div className="brand-block">
-          <div className="brand-mark" aria-hidden="true" />
           <div>
             <div className="brand-title">{translate('brand.title')}</div>
             <div className="brand-subtitle">{translate('brand.subtitle')}</div>
@@ -89,10 +53,6 @@ export function Header() {
         </div>
 
         <div className="header-actions">
-          <button type="button" className="btn-action" onClick={handlePasteClick}>
-            <ClipboardIcon />
-            <span>{translate('header.pasteClipboard')}</span>
-          </button>
           <button
             type="button"
             className="btn-action btn-action-primary"
@@ -185,8 +145,6 @@ export function Header() {
           <span>{translate('header.tip')}</span>
         </div>
       </div>
-
-      {pasteError && <div className="header-alert">{pasteError}</div>}
     </header>
   )
 }
