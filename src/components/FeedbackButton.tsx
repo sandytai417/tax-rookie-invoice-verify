@@ -3,29 +3,11 @@
 import { useState } from 'react'
 import { useApp } from '@/context/AppContext'
 
+const FEEDBACK_FORM_URL = 'https://forms.gle/XM7MziNAFZUFznCF8'
+
 export function FeedbackButton() {
   const { translate } = useApp()
   const [open, setOpen] = useState(false)
-  const [message, setMessage] = useState('')
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
-
-  function handleSubmit() {
-    if (!message.trim()) {
-      setError(translate('feedback.required'))
-      return
-    }
-
-    const subject = encodeURIComponent(translate('feedback.mailtoSubject'))
-    const body = encodeURIComponent(
-      `${message.trim()}${email.trim() ? `\n\nEmail: ${email.trim()}` : ''}`,
-    )
-    window.location.href = `mailto:?subject=${subject}&body=${body}`
-    setOpen(false)
-    setMessage('')
-    setEmail('')
-    setError('')
-  }
 
   return (
     <>
@@ -43,35 +25,29 @@ export function FeedbackButton() {
               </button>
             </header>
 
-            {error && <div className="alert">{error}</div>}
+            <p className="feedback-desc">{translate('feedback.message')}</p>
 
-            <label className="form-field">
-              <span>{translate('feedback.message')}</span>
-              <textarea
-                value={message}
-                onChange={(event) => setMessage(event.target.value)}
-                className="form-textarea"
-                rows={4}
-              />
-            </label>
-
-            <label className="form-field">
-              <span>{translate('feedback.email')}</span>
-              <input
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="control-input"
-              />
-            </label>
+            <a
+              className="feedback-form-link"
+              href={FEEDBACK_FORM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {FEEDBACK_FORM_URL}
+            </a>
 
             <div className="wizard-actions">
               <button type="button" className="btn-ghost" onClick={() => setOpen(false)}>
                 {translate('feedback.cancel')}
               </button>
-              <button type="button" className="btn-primary" onClick={handleSubmit}>
-                {translate('feedback.submit')}
-              </button>
+              <a
+                className="btn-primary feedback-open-btn"
+                href={FEEDBACK_FORM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {translate('feedback.openForm')}
+              </a>
             </div>
           </div>
         </div>

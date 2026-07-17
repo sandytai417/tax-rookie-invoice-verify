@@ -87,12 +87,14 @@
   "feedback": {
     "button": "Feedback",
     "title": "Feedback",
-    "message": "Feedback",
+    "message": "Please share feedback using this form:",
+    "openForm": "Open form",
     "email": "Email (optional)",
     "submit": "Submit",
-    "cancel": "Cancel",
+    "cancel": "Close",
     "required": "Feedback is required.",
-    "mailtoSubject": "Tax Rookie Invoice Verify Feedback"
+    "mailtoSubject": "Tax Rookie Invoice Verify Feedback",
+    "formUrl": "https://forms.gle/XM7MziNAFZUFznCF8"
   },
   "footer": {
     "privacy": "All data is processed locally in your browser. Nothing is uploaded or stored.",

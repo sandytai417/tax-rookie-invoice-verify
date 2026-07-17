@@ -30,6 +30,12 @@ export default function RootLayout({
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
+        {/* Lock mobile spreadsheet UI early so tab switches / landscape do not flash desktop grid. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var k="tax-rookie-touch-ui";var q=window.matchMedia("(hover: none), (pointer: coarse), (max-width: 900px)");if(q.matches||sessionStorage.getItem(k)==="1"){document.documentElement.classList.add("touch-ui");sessionStorage.setItem(k,"1");}}catch(e){}})();`,
+          }}
+        />
       </head>
       <body>
         <Providers>{children}</Providers>
