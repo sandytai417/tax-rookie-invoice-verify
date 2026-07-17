@@ -364,3 +364,11 @@ textarea {
     width: 100%;
   }
 }
+
+.ag-theme-quartz .cell-merged,
+.ag-theme-quartz-dark .cell-merged {
+  background-color: color-mix(in srgb, var(--ag-background-color) 92%, var(--ag-foreground-color));
+  border-bottom: 1px solid var(--ag-border-color);
+  display: flex;
+  align-items: center;
+}

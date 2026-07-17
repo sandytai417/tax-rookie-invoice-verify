@@ -1,28 +1,31 @@
 {
   "brand": {
-    "title": "Tax Rookie | Invoice Verify",
-    "subtitle": "Invoice verification for accountants"
+    "title": "Tax Rookie | Order Verify",
+    "subtitle": "Order line verification for accountants"
   },
   "header": {
-    "taxRate": "Tax Rate",
     "tolerance": "Tolerance",
     "language": "Language",
     "theme": "Theme",
     "importExcel": "Import Excel"
   },
   "summary": {
-    "netTotal": "Net Total",
-    "taxTotal": "Tax Total",
-    "grossTotal": "Gross Total",
+    "orderCount": "Orders",
+    "lineCount": "Line Items",
+    "amountTotal": "Amount Total",
     "anomalies": "Anomalies"
   },
   "grid": {
     "index": "#",
-    "net": "Net Amount",
-    "tax": "Tax Amount",
-    "gross": "Gross Amount",
-    "theoreticalTax": "Theoretical Tax",
+    "createdDate": "Date",
+    "orderId": "Order ID",
+    "itemName": "Item",
+    "quantity": "Qty",
+    "unitPrice": "Unit Price",
+    "amount": "Amount",
+    "theoreticalAmount": "Expected Amount",
     "difference": "Difference",
+    "remarks": "Remarks",
     "status": "Status"
   },
   "status": {
@@ -56,14 +59,14 @@
     "next": "Next",
     "import": "Import",
     "selectFileTitle": "Select Excel file",
-    "selectFileDesc": "Supports .xlsx and .xls. Files are processed locally in your browser only.",
+    "selectFileDesc": "Supports .xlsx and .xls. Merged cells are expanded and date/order columns are forward-filled.",
     "chooseFile": "Choose Excel file",
     "selectSheetTitle": "Select worksheet",
     "fileLabel": "File",
     "previewTitle": "Preview data",
     "sheetLabel": "Worksheet",
     "mappingTitle": "Column mapping",
-    "mappingDesc": "Specify each field manually. No automatic detection is used.",
+    "mappingDesc": "Columns are auto-suggested from headers. You can adjust them manually.",
     "notSpecified": "(Not specified)",
     "confirmTitle": "Confirm import",
     "errors": {
@@ -82,13 +85,13 @@
     "submit": "Submit",
     "cancel": "Cancel",
     "required": "Feedback is required.",
-    "mailtoSubject": "Tax Rookie Invoice Verify Feedback"
+    "mailtoSubject": "Tax Rookie Order Verify Feedback"
   },
   "footer": {
     "privacy": "All data is processed locally in your browser. Nothing is uploaded or stored."
   },
   "empty": {
-    "hint": "Paste from Excel or import a file to begin verification."
+    "hint": "Paste from Excel or import a file to verify (quantity × unit price = amount)."
   },
   "units": {
     "percent": "%"

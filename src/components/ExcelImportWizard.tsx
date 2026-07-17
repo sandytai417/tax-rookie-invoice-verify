@@ -2,12 +2,30 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { useApp } from '@/context/AppContext'
-import { mapSheetToRows, parseExcelFile, previewRows } from '@/lib/excel'
+import { mapSheetToRows, parseExcelFile, previewRows, suggestColumnMapping } from '@/lib/excel'
 import type { ColumnMapping, ParsedWorkbook } from '@/types'
 
 type Step = 1 | 2 | 3 | 4 | 5
 
-const FIELD_KEYS = ['net', 'tax', 'gross'] as const
+const FIELD_KEYS = [
+  'createdDate',
+  'orderId',
+  'itemName',
+  'quantity',
+  'unitPrice',
+  'amount',
+  'remarks',
+] as const satisfies ReadonlyArray<keyof ColumnMapping>
+
+const EMPTY_MAPPING: ColumnMapping = {
+  createdDate: null,
+  orderId: null,
+  itemName: null,
+  quantity: null,
+  unitPrice: null,
+  amount: null,
+  remarks: null,
+}
 
 export function ExcelImportWizard() {
   const { importWizardOpen, setImportWizardOpen, replaceRowsFromImport, translate } = useApp()
@@ -15,7 +33,7 @@ export function ExcelImportWizard() {
   const [fileName, setFileName] = useState('')
   const [workbook, setWorkbook] = useState<ParsedWorkbook | null>(null)
   const [selectedSheet, setSelectedSheet] = useState('')
-  const [mapping, setMapping] = useState<ColumnMapping>({ net: null, tax: null, gross: null })
+  const [mapping, setMapping] = useState<ColumnMapping>(EMPTY_MAPPING)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -24,12 +42,17 @@ export function ExcelImportWizard() {
     setFileName('')
     setWorkbook(null)
     setSelectedSheet('')
-    setMapping({ net: null, tax: null, gross: null })
+    setMapping(EMPTY_MAPPING)
     setError('')
   }, [importWizardOpen])
 
   const sheet = workbook?.sheets[selectedSheet]
   const preview = useMemo(() => (sheet ? previewRows(sheet) : []), [sheet])
+
+  const applySheetMapping = (sheetName: string, parsed: ParsedWorkbook) => {
+    const nextSheet = parsed.sheets[sheetName]
+    if (nextSheet) setMapping(suggestColumnMapping(nextSheet.headers))
+  }
 
   if (!importWizardOpen) return null
 
@@ -48,7 +71,7 @@ export function ExcelImportWizard() {
       setWorkbook(parsed)
       setFileName(file.name)
       setSelectedSheet(parsed.sheetNames[0])
-      setMapping({ net: null, tax: null, gross: null })
+      applySheetMapping(parsed.sheetNames[0], parsed)
       setStep(parsed.sheetNames.length > 1 ? 2 : 3)
     } catch {
       setError(translate('import.errors.readFailed'))
@@ -57,7 +80,8 @@ export function ExcelImportWizard() {
 
   function handleImport() {
     if (!sheet) return
-    if (!mapping.net && !mapping.tax && !mapping.gross) {
+    const hasMapping = FIELD_KEYS.some((field) => mapping[field])
+    if (!hasMapping) {
       setError(translate('import.errors.selectField'))
       return
     }
@@ -111,7 +135,10 @@ export function ExcelImportWizard() {
                     type="radio"
                     name="sheet"
                     checked={selectedSheet === name}
-                    onChange={() => setSelectedSheet(name)}
+                    onChange={() => {
+                      setSelectedSheet(name)
+                      if (workbook) applySheetMapping(name, workbook)
+                    }}
                   />
                   <span>{name}</span>
                 </label>
@@ -229,15 +256,11 @@ export function ExcelImportWizard() {
               <li>
                 {translate('import.sheetLabel')}: {selectedSheet}
               </li>
-              <li>
-                {translate('grid.net')}: {mapping.net ?? translate('import.notSpecified')}
-              </li>
-              <li>
-                {translate('grid.tax')}: {mapping.tax ?? translate('import.notSpecified')}
-              </li>
-              <li>
-                {translate('grid.gross')}: {mapping.gross ?? translate('import.notSpecified')}
-              </li>
+              {FIELD_KEYS.map((field) => (
+                <li key={field}>
+                  {translate(`grid.${field}`)}: {mapping[field] ?? translate('import.notSpecified')}
+                </li>
+              ))}
             </ul>
             <div className="wizard-actions">
               <button type="button" className="btn-ghost" onClick={() => setStep(4)}>

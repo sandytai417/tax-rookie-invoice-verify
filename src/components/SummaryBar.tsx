@@ -10,13 +10,13 @@ export function SummaryBar() {
   return (
     <div className="summary-bar" role="status">
       <span>
-        {translate('summary.netTotal')}: {formatAmount(summary.netTotal, numberLocale)}
+        {translate('summary.orderCount')}: {summary.orderCount}
       </span>
       <span>
-        {translate('summary.taxTotal')}: {formatAmount(summary.taxTotal, numberLocale)}
+        {translate('summary.lineCount')}: {summary.lineCount}
       </span>
       <span>
-        {translate('summary.grossTotal')}: {formatAmount(summary.grossTotal, numberLocale)}
+        {translate('summary.amountTotal')}: {formatAmount(summary.amountTotal, numberLocale)}
       </span>
       <span className={summary.anomalyCount > 0 ? 'summary-anomaly' : ''}>
         {translate('summary.anomalies')}: {summary.anomalyCount}

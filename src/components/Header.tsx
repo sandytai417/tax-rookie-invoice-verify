@@ -6,8 +6,6 @@ import type { Locale, ThemeMode, TolerancePreset } from '@/types'
 export function Header() {
   const {
     translate,
-    taxRate,
-    setTaxRate,
     tolerancePreset,
     setTolerancePreset,
     customTolerance,
@@ -27,19 +25,6 @@ export function Header() {
       </div>
 
       <div className="header-controls">
-        <label className="control">
-          <span>{translate('header.taxRate')}</span>
-          <input
-            type="number"
-            min={0}
-            step={0.01}
-            value={taxRate}
-            onChange={(event) => setTaxRate(Number(event.target.value))}
-            className="control-input narrow"
-          />
-          <span>{translate('units.percent')}</span>
-        </label>
-
         <label className="control">
           <span>{translate('header.tolerance')}</span>
           <select

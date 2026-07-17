@@ -11,17 +11,16 @@ import {
 } from 'ag-grid-community'
 import { useApp } from '@/context/AppContext'
 import { formatAmount, parseAmount } from '@/lib/numbers'
-import { parseClipboardMatrix } from '@/lib/verification'
-import type { ComputedInvoiceRow } from '@/types'
+import { getRowSpan, parseClipboardMatrix } from '@/lib/verification'
+import type { ComputedOrderLineRow, EditableOrderField } from '@/types'
+import { EDITABLE_ORDER_FIELDS } from '@/types'
 
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-quartz.css'
 
 ModuleRegistry.registerModules([AllCommunityModule])
 
-const editableFields = ['net', 'tax', 'gross'] as const
-
-function statusIcon(status: ComputedInvoiceRow['status']): string {
+function statusIcon(status: ComputedOrderLineRow['status']): string {
   switch (status) {
     case 'exact':
       return '🟢'
@@ -37,10 +36,10 @@ function statusIcon(status: ComputedInvoiceRow['status']): string {
 export function InvoiceGrid() {
   const { computedRows, updateRow, applyPaste, translate, locale, resolvedTheme } = useApp()
 
-  const gridRef = useRef<AgGridReact<ComputedInvoiceRow>>(null)
-  const focusRef = useRef<{ rowIndex: number; field: (typeof editableFields)[number] }>({
+  const gridRef = useRef<AgGridReact<ComputedOrderLineRow>>(null)
+  const focusRef = useRef<{ rowIndex: number; field: EditableOrderField }>({
     rowIndex: 0,
-    field: 'net',
+    field: 'createdDate',
   })
 
   const numberLocale = locale === 'zh-TW' ? 'zh-TW' : 'en-US'
@@ -52,48 +51,94 @@ export function InvoiceGrid() {
     return parseAmount(String(params.newValue))
   }, [])
 
-  const columnDefs = useMemo<ColDef<ComputedInvoiceRow>[]>(
+  const textParser = useCallback((params: ValueParserParams) => {
+    if (params.newValue === '' || params.newValue === null || params.newValue === undefined) {
+      return null
+    }
+    return String(params.newValue).trim() || null
+  }, [])
+
+  const columnDefs = useMemo<ColDef<ComputedOrderLineRow>[]>(
     () => [
       {
         field: 'index',
         headerName: translate('grid.index'),
-        width: 56,
+        width: 48,
         pinned: 'left',
         editable: false,
         suppressNavigable: true,
       },
       {
-        field: 'net',
-        headerName: translate('grid.net'),
+        field: 'createdDate',
+        headerName: translate('grid.createdDate'),
         editable: true,
-        width: 130,
-        type: 'numericColumn',
-        valueParser: amountParser,
-        valueFormatter: (params) => formatAmount(params.value ?? null, numberLocale),
+        width: 110,
+        valueParser: textParser,
+        rowSpan: (params) =>
+          params.node?.rowIndex == null
+            ? 1
+            : getRowSpan(computedRows, params.node.rowIndex, 'createdDate'),
+        cellClassRules: {
+          'cell-merged': (params) =>
+            params.node?.rowIndex != null &&
+            getRowSpan(computedRows, params.node.rowIndex, 'createdDate') > 1,
+        },
       },
       {
-        field: 'tax',
-        headerName: translate('grid.tax'),
+        field: 'orderId',
+        headerName: translate('grid.orderId'),
         editable: true,
         width: 120,
-        type: 'numericColumn',
-        valueParser: amountParser,
-        valueFormatter: (params) => formatAmount(params.value ?? null, numberLocale),
+        valueParser: textParser,
+        rowSpan: (params) =>
+          params.node?.rowIndex == null
+            ? 1
+            : getRowSpan(computedRows, params.node.rowIndex, 'orderId'),
+        cellClassRules: {
+          'cell-merged': (params) =>
+            params.node?.rowIndex != null &&
+            getRowSpan(computedRows, params.node.rowIndex, 'orderId') > 1,
+        },
       },
       {
-        field: 'gross',
-        headerName: translate('grid.gross'),
+        field: 'itemName',
+        headerName: translate('grid.itemName'),
         editable: true,
-        width: 130,
+        width: 180,
+        valueParser: textParser,
+      },
+      {
+        field: 'quantity',
+        headerName: translate('grid.quantity'),
+        editable: true,
+        width: 90,
         type: 'numericColumn',
         valueParser: amountParser,
         valueFormatter: (params) => formatAmount(params.value ?? null, numberLocale),
       },
       {
-        field: 'theoreticalTax',
-        headerName: translate('grid.theoreticalTax'),
+        field: 'unitPrice',
+        headerName: translate('grid.unitPrice'),
+        editable: true,
+        width: 100,
+        type: 'numericColumn',
+        valueParser: amountParser,
+        valueFormatter: (params) => formatAmount(params.value ?? null, numberLocale),
+      },
+      {
+        field: 'amount',
+        headerName: translate('grid.amount'),
+        editable: true,
+        width: 110,
+        type: 'numericColumn',
+        valueParser: amountParser,
+        valueFormatter: (params) => formatAmount(params.value ?? null, numberLocale),
+      },
+      {
+        field: 'theoreticalAmount',
+        headerName: translate('grid.theoreticalAmount'),
         editable: false,
-        width: 130,
+        width: 110,
         type: 'numericColumn',
         valueFormatter: (params) => formatAmount(params.value ?? null, numberLocale),
       },
@@ -101,21 +146,28 @@ export function InvoiceGrid() {
         field: 'difference',
         headerName: translate('grid.difference'),
         editable: false,
-        width: 110,
+        width: 90,
         type: 'numericColumn',
         valueFormatter: (params) => formatAmount(params.value ?? null, numberLocale),
+      },
+      {
+        field: 'remarks',
+        headerName: translate('grid.remarks'),
+        editable: true,
+        width: 120,
+        valueParser: textParser,
       },
       {
         field: 'status',
         headerName: translate('grid.status'),
         editable: false,
-        minWidth: 180,
+        minWidth: 160,
         flex: 1,
         valueFormatter: (params) =>
           `${statusIcon(params.data?.status ?? 'empty')} ${translate(`status.${params.data?.status ?? 'empty'}`)}`,
       },
     ],
-    [amountParser, numberLocale, translate],
+    [amountParser, computedRows, numberLocale, textParser, translate],
   )
 
   const defaultColDef = useMemo<ColDef>(
@@ -124,17 +176,19 @@ export function InvoiceGrid() {
       sortable: false,
       filter: false,
       suppressHeaderMenuButton: true,
+      wrapText: false,
+      autoHeight: false,
     }),
     [],
   )
 
-  const onCellFocused = useCallback((event: CellFocusedEvent<ComputedInvoiceRow>) => {
+  const onCellFocused = useCallback((event: CellFocusedEvent<ComputedOrderLineRow>) => {
     if (event.rowIndex == null || !event.column) return
     const colId = typeof event.column === 'string' ? event.column : event.column.getColId()
-    if (editableFields.includes(colId as (typeof editableFields)[number])) {
+    if (EDITABLE_ORDER_FIELDS.includes(colId as EditableOrderField)) {
       focusRef.current = {
         rowIndex: event.rowIndex,
-        field: colId as (typeof editableFields)[number],
+        field: colId as EditableOrderField,
       }
     }
   }, [])
@@ -156,7 +210,7 @@ export function InvoiceGrid() {
 
   return (
     <div className="grid-panel" onPaste={handlePaste}>
-      <AgGridReact<ComputedInvoiceRow>
+      <AgGridReact<ComputedOrderLineRow>
         ref={gridRef}
         theme="legacy"
         rowData={computedRows}
@@ -167,18 +221,15 @@ export function InvoiceGrid() {
         onCellValueChanged={(event) => {
           if (!event.data || !event.colDef.field) return
           const field = event.colDef.field
-          if (!editableFields.includes(field as (typeof editableFields)[number])) return
-          updateRow(
-            event.data.id,
-            field as (typeof editableFields)[number],
-            event.newValue as number | null,
-          )
+          if (!EDITABLE_ORDER_FIELDS.includes(field as EditableOrderField)) return
+          updateRow(event.data.id, field as EditableOrderField, event.newValue)
         }}
         singleClickEdit
         stopEditingWhenCellsLoseFocus
         enterNavigatesVertically
         enterNavigatesVerticallyAfterEdit
         suppressRowClickSelection
+        enableCellSpan
         rowHeight={28}
         headerHeight={30}
         className={resolvedTheme === 'dark' ? 'ag-theme-quartz-dark' : 'ag-theme-quartz'}

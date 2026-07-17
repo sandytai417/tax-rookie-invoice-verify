@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from 'react'
 import { getMessages, t, type Messages } from '@/lib/i18n'
+import { parseAmount } from '@/lib/numbers'
 import {
   computeRows,
   createEmptyRow,
@@ -17,16 +18,17 @@ import {
   summarizeRows,
 } from '@/lib/verification'
 import type {
-  ComputedInvoiceRow,
-  InvoiceRow,
+  ComputedOrderLineRow,
+  EditableOrderField,
   Locale,
+  OrderLineRow,
   ThemeMode,
   TolerancePreset,
 } from '@/types'
+import { EDITABLE_ORDER_FIELDS, NUMERIC_ORDER_FIELDS } from '@/types'
 
 const LOCALE_KEY = 'tri-locale'
 const THEME_KEY = 'tri-theme'
-const TAX_RATE_KEY = 'tri-tax-rate'
 const TOLERANCE_PRESET_KEY = 'tri-tolerance-preset'
 const TOLERANCE_CUSTOM_KEY = 'tri-tolerance-custom'
 
@@ -38,24 +40,24 @@ interface AppContextValue {
   theme: ThemeMode
   setTheme: (theme: ThemeMode) => void
   resolvedTheme: 'light' | 'dark'
-  taxRate: number
-  setTaxRate: (value: number) => void
   tolerancePreset: TolerancePreset
   setTolerancePreset: (value: TolerancePreset) => void
   customTolerance: number
   setCustomTolerance: (value: number) => void
   tolerance: number
-  rows: InvoiceRow[]
-  setRows: (rows: InvoiceRow[]) => void
-  computedRows: ComputedInvoiceRow[]
+  rows: OrderLineRow[]
+  setRows: (rows: OrderLineRow[]) => void
+  computedRows: ComputedOrderLineRow[]
   summary: ReturnType<typeof summarizeRows>
   importWizardOpen: boolean
   setImportWizardOpen: (open: boolean) => void
-  replaceRowsFromImport: (
-    imported: Array<{ net: number | null; tax: number | null; gross: number | null }>,
+  replaceRowsFromImport: (imported: OrderLineRow[]) => void
+  applyPaste: (matrix: string[][], startRowIndex: number, field: EditableOrderField) => void
+  updateRow: (
+    id: string,
+    field: EditableOrderField,
+    value: string | number | null,
   ) => void
-  applyPaste: (matrix: Array<Array<number | null>>, startRowIndex: number, field: 'net' | 'tax' | 'gross') => void
-  updateRow: (id: string, field: keyof Pick<InvoiceRow, 'net' | 'tax' | 'gross'>, value: number | null) => void
 }
 
 const AppContext = createContext<AppContextValue | null>(null)
@@ -80,25 +82,33 @@ function resolveTheme(theme: ThemeMode): 'light' | 'dark' {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
-function createInitialRows(): InvoiceRow[] {
+function createInitialRows(): OrderLineRow[] {
   return Array.from({ length: 20 }, () => createEmptyRow())
+}
+
+function parsePastedValue(field: EditableOrderField, raw: string): string | number | null {
+  const trimmed = raw.trim()
+  if (!trimmed) return null
+
+  if ((NUMERIC_ORDER_FIELDS as readonly string[]).includes(field)) {
+    return parseAmount(trimmed)
+  }
+
+  return trimmed
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>('en')
   const [theme, setThemeState] = useState<ThemeMode>('system')
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light')
-  const [taxRate, setTaxRateState] = useState(5)
   const [tolerancePreset, setTolerancePresetState] = useState<TolerancePreset>('0.01')
   const [customTolerance, setCustomToleranceState] = useState(0.01)
-  const [rows, setRows] = useState<InvoiceRow[]>(createInitialRows)
+  const [rows, setRows] = useState<OrderLineRow[]>(createInitialRows)
   const [importWizardOpen, setImportWizardOpen] = useState(false)
 
   useEffect(() => {
     setLocaleState(readStoredLocale())
     setThemeState(readStoredTheme())
-    const storedRate = window.localStorage.getItem(TAX_RATE_KEY)
-    if (storedRate) setTaxRateState(Number(storedRate) || 5)
     const storedPreset = window.localStorage.getItem(TOLERANCE_PRESET_KEY) as TolerancePreset | null
     if (storedPreset) setTolerancePresetState(storedPreset)
     const storedCustom = window.localStorage.getItem(TOLERANCE_CUSTOM_KEY)
@@ -131,12 +141,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     window.localStorage.setItem(THEME_KEY, value)
   }, [])
 
-  const setTaxRate = useCallback((value: number) => {
-    const safe = Number.isFinite(value) ? Math.max(0, value) : 5
-    setTaxRateState(safe)
-    window.localStorage.setItem(TAX_RATE_KEY, String(safe))
-  }, [])
-
   const setTolerancePreset = useCallback((value: TolerancePreset) => {
     setTolerancePresetState(value)
     window.localStorage.setItem(TOLERANCE_PRESET_KEY, value)
@@ -155,14 +159,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [messages],
   )
 
-  const computedRows = useMemo(
-    () => computeRows(rows, taxRate, tolerance),
-    [rows, taxRate, tolerance],
-  )
+  const computedRows = useMemo(() => computeRows(rows, tolerance), [rows, tolerance])
   const summary = useMemo(() => summarizeRows(computedRows), [computedRows])
 
   const updateRow = useCallback(
-    (id: string, field: keyof Pick<InvoiceRow, 'net' | 'tax' | 'gross'>, value: number | null) => {
+    (id: string, field: EditableOrderField, value: string | number | null) => {
       setRows((current) =>
         current.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
       )
@@ -170,27 +171,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [],
   )
 
-  const replaceRowsFromImport = useCallback(
-    (
-      imported: Array<{ net: number | null; tax: number | null; gross: number | null }>,
-    ) => {
-      setRows(
-        imported.map((row) => ({
-          id: crypto.randomUUID(),
-          ...row,
-        })),
-      )
-    },
-    [],
-  )
+  const replaceRowsFromImport = useCallback((imported: OrderLineRow[]) => {
+    setRows(imported)
+  }, [])
 
   const applyPaste = useCallback(
-    (
-      matrix: Array<Array<number | null>>,
-      startRowIndex: number,
-      field: 'net' | 'tax' | 'gross',
-    ) => {
-      const fieldIndex = ['net', 'tax', 'gross'].indexOf(field)
+    (matrix: string[][], startRowIndex: number, field: EditableOrderField) => {
+      const fieldIndex = EDITABLE_ORDER_FIELDS.indexOf(field)
       setRows((current) => {
         const next = [...current]
         const isSingleColumn = matrix.every((row) => row.length === 1)
@@ -200,7 +187,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
             const targetIndex = startRowIndex + offset
             while (targetIndex >= next.length) next.push(createEmptyRow())
             const target = next[targetIndex]
-            next[targetIndex] = { ...target, [field]: row[0] }
+            next[targetIndex] = {
+              ...target,
+              [field]: parsePastedValue(field, row[0] ?? ''),
+            }
           })
           return next
         }
@@ -209,12 +199,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
           const targetIndex = startRowIndex + offset
           while (targetIndex >= next.length) next.push(createEmptyRow())
           const target = next[targetIndex]
-          next[targetIndex] = {
-            ...target,
-            net: row[fieldIndex] ?? row[0] ?? target.net,
-            tax: row[fieldIndex + 1] ?? row[1] ?? target.tax,
-            gross: row[fieldIndex + 2] ?? row[2] ?? target.gross,
-          }
+          const updates: Partial<OrderLineRow> = {}
+
+          EDITABLE_ORDER_FIELDS.forEach((editableField, index) => {
+            const cell = row[fieldIndex + index] ?? row[index]
+            if (cell === undefined) return
+            updates[editableField] = parsePastedValue(editableField, cell) as never
+          })
+
+          next[targetIndex] = { ...target, ...updates }
         })
         return next
       })
@@ -230,8 +223,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     theme,
     setTheme,
     resolvedTheme,
-    taxRate,
-    setTaxRate,
     tolerancePreset,
     setTolerancePreset,
     customTolerance,
