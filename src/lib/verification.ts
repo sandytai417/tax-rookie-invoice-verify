@@ -49,6 +49,70 @@ function resolveStatus(
   return 'out_of_tolerance'
 }
 
+export function isRowEmpty(row: OrderLineRow): boolean {
+  return (
+    !row.createdDate &&
+    !row.orderId &&
+    !row.itemName &&
+    row.quantity === null &&
+    row.unitPrice === null &&
+    row.amount === null &&
+    !row.remarks
+  )
+}
+
+function hasLineItemData(row: OrderLineRow): boolean {
+  return (
+    Boolean(row.itemName) ||
+    row.quantity !== null ||
+    row.unitPrice !== null ||
+    row.amount !== null ||
+    Boolean(row.remarks)
+  )
+}
+
+function hasRowContent(row: OrderLineRow): boolean {
+  return hasLineItemData(row) || Boolean(row.orderId) || Boolean(row.createdDate)
+}
+
+export function resolveOrderLineFields(rows: OrderLineRow[]): OrderLineRow[] {
+  let lastDate: string | null = null
+  let lastOrderId: string | null = null
+
+  return rows.map((row) => {
+    if (isRowEmpty(row)) return row
+
+    const createdDate = row.createdDate ?? (hasRowContent(row) ? lastDate : null)
+    const orderId = row.orderId ?? (hasLineItemData(row) ? lastOrderId : null)
+
+    if (createdDate) lastDate = createdDate
+    if (orderId) lastOrderId = orderId
+
+    return { ...row, createdDate, orderId }
+  })
+}
+
+export function ensureTrailingRows(
+  rows: OrderLineRow[],
+  minEmpty = 5,
+  minTotal = 20,
+): OrderLineRow[] {
+  const next = [...rows]
+  let trailingEmpty = 0
+
+  for (let index = next.length - 1; index >= 0; index--) {
+    if (!isRowEmpty(next[index])) break
+    trailingEmpty++
+  }
+
+  while (trailingEmpty < minEmpty || next.length < minTotal) {
+    next.push(createEmptyRow())
+    trailingEmpty++
+  }
+
+  return next
+}
+
 export function computeRow(
   row: OrderLineRow,
   index: number,
@@ -76,7 +140,7 @@ export function computeRow(
 }
 
 export function computeRows(rows: OrderLineRow[], tolerance: number): ComputedOrderLineRow[] {
-  return rows.map((row, index) => computeRow(row, index + 1, tolerance))
+  return resolveOrderLineFields(rows).map((row, index) => computeRow(row, index + 1, tolerance))
 }
 
 export function summarizeRows(rows: ComputedOrderLineRow[]) {

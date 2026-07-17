@@ -14,6 +14,7 @@ import { parseAmount } from '@/lib/numbers'
 import {
   computeRows,
   createEmptyRow,
+  ensureTrailingRows,
   getToleranceValue,
   summarizeRows,
 } from '@/lib/verification'
@@ -165,14 +166,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const updateRow = useCallback(
     (id: string, field: EditableOrderField, value: string | number | null) => {
       setRows((current) =>
-        current.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
+        ensureTrailingRows(
+          current.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
+        ),
       )
     },
     [],
   )
 
   const replaceRowsFromImport = useCallback((imported: OrderLineRow[]) => {
-    setRows(imported)
+    setRows(ensureTrailingRows(imported))
   }, [])
 
   const applyPaste = useCallback(
@@ -209,7 +212,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
           next[targetIndex] = { ...target, ...updates }
         })
-        return next
+        return ensureTrailingRows(next)
       })
     },
     [],

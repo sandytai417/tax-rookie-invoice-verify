@@ -222,7 +222,9 @@ export function InvoiceGrid() {
           if (!event.data || !event.colDef.field) return
           const field = event.colDef.field
           if (!EDITABLE_ORDER_FIELDS.includes(field as EditableOrderField)) return
-          updateRow(event.data.id, field as EditableOrderField, event.newValue)
+          const value =
+            event.newValue === '' || event.newValue === undefined ? null : event.newValue
+          updateRow(event.data.id, field as EditableOrderField, value)
         }}
         singleClickEdit
         stopEditingWhenCellsLoseFocus

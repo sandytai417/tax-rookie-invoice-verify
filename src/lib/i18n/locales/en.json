@@ -91,7 +91,7 @@
     "privacy": "All data is processed locally in your browser. Nothing is uploaded or stored."
   },
   "empty": {
-    "hint": "Paste from Excel or import a file to verify (quantity × unit price = amount)."
+    "hint": "Click cells to type and press Enter to move down. Leave date and order ID blank on continuation lines. You can also paste or import from Excel (quantity × unit price = amount)."
   },
   "units": {
     "percent": "%"
