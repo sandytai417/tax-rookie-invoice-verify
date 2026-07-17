@@ -10,7 +10,6 @@ import {
   type ReactNode,
 } from 'react'
 import { getMessages, t, type Messages } from '@/lib/i18n'
-import { parseAmount } from '@/lib/numbers'
 import {
   computeRows,
   createEmptyRow,
