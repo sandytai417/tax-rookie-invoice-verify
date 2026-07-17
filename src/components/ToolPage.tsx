@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { AppFooter } from '@/components/AppFooter'
 import { ExcelImportWizard } from '@/components/ExcelImportWizard'
@@ -15,36 +14,21 @@ const InvoiceGrid = dynamic(() => import('@/components/InvoiceGrid').then((mod) 
   loading: () => <div className="grid-panel grid-loading" />,
 })
 
-function useIsMobileViewport() {
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const media = window.matchMedia('(max-width: 900px), (pointer: coarse)')
-    const update = () => setIsMobile(media.matches)
-    update()
-    media.addEventListener('change', update)
-    return () => media.removeEventListener('change', update)
-  }, [])
-
-  return isMobile
-}
-
 export function ToolPage() {
   const { translate } = useApp()
-  const isMobile = useIsMobileViewport()
 
   return (
     <div className="tool-shell">
       <Header />
       <SummaryBar />
       <div className="grid-scroll-area">
-        {isMobile ? (
-          <div className="grid-panel mobile-grid-panel">
-            <MobileInvoiceTable />
-          </div>
-        ) : (
+        <p className="mobile-scroll-hint">{translate('empty.mobileScrollHint')}</p>
+        <div className="grid-panel desktop-only">
           <InvoiceGrid />
-        )}
+        </div>
+        <div className="grid-panel mobile-only mobile-grid-panel">
+          <MobileInvoiceTable />
+        </div>
       </div>
       <AppFooter />
       <p className="privacy-line">{translate('footer.privacy')}</p>

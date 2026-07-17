@@ -63,9 +63,10 @@ interface AppContextValue {
 const AppContext = createContext<AppContextValue | null>(null)
 
 function readStoredLocale(): Locale {
-  if (typeof window === 'undefined') return 'en'
+  if (typeof window === 'undefined') return 'zh-TW'
   const stored = window.localStorage.getItem(LOCALE_KEY)
-  return stored === 'zh-TW' ? 'zh-TW' : 'en'
+  if (stored === 'zh-TW' || stored === 'en') return stored
+  return window.navigator.language.toLowerCase().startsWith('zh') ? 'zh-TW' : 'en'
 }
 
 function readStoredTheme(): ThemeMode {
@@ -87,7 +88,7 @@ function createInitialRows(): InvoiceRow[] {
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>('en')
+  const [locale, setLocaleState] = useState<Locale>('zh-TW')
   const [theme, setThemeState] = useState<ThemeMode>('system')
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light')
   const [taxRate, setTaxRateState] = useState(5)

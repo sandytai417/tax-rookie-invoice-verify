@@ -126,7 +126,7 @@ export function MobileInvoiceTable() {
             <th>{translate('grid.theoreticalNet')}</th>
             <th>{translate('grid.theoreticalTax')}</th>
             <th>{translate('grid.gross')}</th>
-            <th>{translate('grid.theoreticalGross')}</th>
+            <th className="mobile-end-col">{translate('grid.theoreticalGross')}</th>
           </tr>
         </thead>
         <tbody>
@@ -140,7 +140,7 @@ export function MobileInvoiceTable() {
               <td>{renderReadonly(row.theoreticalNet)}</td>
               <td>{renderReadonly(row.theoreticalTax)}</td>
               <td>{renderInput(row, 'gross')}</td>
-              <td>{renderReadonly(row.theoreticalGross)}</td>
+              <td className="mobile-end-col">{renderReadonly(row.theoreticalGross)}</td>
             </tr>
           ))}
         </tbody>

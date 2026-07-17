@@ -97,7 +97,8 @@
     "liveHint": "Values calculate instantly. Soft row colors show status (green / orange / red)."
   },
   "empty": {
-    "hint": "Tap Net, Tax, or Total to enter values. Row colors: light green = match, light orange = within tolerance, light red = out of tolerance."
+    "hint": "Tap Net, Tax, or Total to enter values. Row colors: light green = match, light orange = within tolerance, light red = out of tolerance.",
+    "mobileScrollHint": "← Swipe to see Expected Total →  Row colors update as you type"
   },
   "units": {
     "percent": "%"

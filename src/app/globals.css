@@ -294,6 +294,175 @@ textarea {
   box-shadow: var(--card-shadow);
 }
 
+.mobile-scroll-hint {
+  display: none;
+  margin: 0;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-bottom: 1px solid #bfdbfe;
+  flex-shrink: 0;
+}
+
+.desktop-only {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* Mobile table styles always available (not gated by max-width only). */
+.mobile-grid-panel {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  height: 100%;
+  min-height: 50dvh;
+  width: 100%;
+}
+
+.mobile-table-wrap {
+  min-width: 100%;
+  min-height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13px;
+}
+
+.mobile-table th,
+.mobile-table td {
+  border: 1px solid #cbd5e1;
+  padding: 0;
+  min-width: 76px;
+  height: 44px;
+  vertical-align: middle;
+  background: #fff;
+}
+
+.mobile-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding: 8px 4px;
+  white-space: nowrap;
+}
+
+.mobile-sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  min-width: 44px !important;
+  width: 44px;
+  text-align: center;
+  background: #f8fafc;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.mobile-table thead .mobile-sticky-col {
+  z-index: 4;
+  background: #f1f5f9 !important;
+}
+
+.mobile-cell-input {
+  width: 100%;
+  height: 44px;
+  border: none;
+  outline: none;
+  background: transparent;
+  text-align: right;
+  padding: 0 8px;
+  font-size: 16px;
+  color: #0f172a;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+}
+
+.mobile-cell-input:focus {
+  background: #eff6ff;
+  box-shadow: inset 0 0 0 2px #2563eb;
+}
+
+.mobile-readonly {
+  display: block;
+  text-align: right;
+  padding: 0 8px;
+  color: #475569;
+}
+
+.mobile-row-exact td,
+.mobile-row-exact .mobile-sticky-col {
+  background: #eaf8ef !important;
+}
+
+.mobile-row-within_tolerance td,
+.mobile-row-within_tolerance .mobile-sticky-col {
+  background: #fff3e6 !important;
+}
+
+.mobile-row-out_of_tolerance td,
+.mobile-row-out_of_tolerance .mobile-sticky-col {
+  background: #fdecec !important;
+}
+
+.mobile-row-incomplete td,
+.mobile-row-incomplete .mobile-sticky-col {
+  background: #f3f4f6 !important;
+}
+
+.mobile-end-col {
+  position: sticky;
+  right: 0;
+  z-index: 3;
+  min-width: 84px !important;
+  background: #fff7ed;
+  box-shadow: -3px 0 6px rgba(15, 23, 42, 0.08);
+  font-weight: 600;
+}
+
+.mobile-table thead .mobile-end-col {
+  z-index: 4;
+  background: #ffedd5 !important;
+  color: #9a3412;
+}
+
+.mobile-row-exact .mobile-end-col {
+  background: #eaf8ef !important;
+}
+
+.mobile-row-within_tolerance .mobile-end-col {
+  background: #fff3e6 !important;
+}
+
+.mobile-row-out_of_tolerance .mobile-end-col {
+  background: #fdecec !important;
+}
+
+.mobile-row-incomplete .mobile-end-col {
+  background: #f3f4f6 !important;
+}
+
+.mobile-row-total .mobile-end-col {
+  background: #e8f1fb !important;
+}
+
 .grid-panel {
   flex: 1;
   min-height: 0;
@@ -821,134 +990,16 @@ textarea {
     min-height: 50dvh;
   }
 
-  .mobile-grid-panel {
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    height: 100%;
-    min-height: 50dvh;
-  }
-
-  .mobile-table-wrap {
-    min-width: 100%;
-    min-height: 100%;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .mobile-table {
-    width: max-content;
-    min-width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    font-size: 13px;
-  }
-
-  .mobile-table th,
-  .mobile-table td {
-    border: 1px solid #cbd5e1;
-    padding: 0;
-    min-width: 88px;
-    height: 44px;
-    vertical-align: middle;
-    background: #fff;
-  }
-
-  .mobile-table th {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    background: #f1f5f9;
-    color: #334155;
-    font-size: 11px;
-    font-weight: 700;
-    text-align: center;
-    padding: 8px 4px;
-    white-space: nowrap;
-  }
-
-  .mobile-sticky-col {
-    position: sticky;
-    left: 0;
-    z-index: 3;
-    min-width: 44px !important;
-    width: 44px;
-    text-align: center;
-    background: #f8fafc;
-    font-weight: 600;
-    color: #64748b;
-  }
-
-  .mobile-table thead .mobile-sticky-col {
-    z-index: 4;
-    background: #f1f5f9 !important;
-  }
-
-  .mobile-row-exact .mobile-sticky-col {
-    background: #eaf8ef !important;
-  }
-
-  .mobile-row-within_tolerance .mobile-sticky-col {
-    background: #fff3e6 !important;
-  }
-
-  .mobile-row-out_of_tolerance .mobile-sticky-col {
-    background: #fdecec !important;
-  }
-
-  .mobile-row-incomplete .mobile-sticky-col {
-    background: #f3f4f6 !important;
-  }
-
-  .mobile-cell-input {
-    width: 100%;
-    height: 44px;
-    border: none;
-    outline: none;
-    background: transparent;
-    text-align: right;
-    padding: 0 8px;
-    font-size: 16px;
-    color: #0f172a;
-    -webkit-appearance: none;
-    appearance: none;
-    border-radius: 0;
-  }
-
-  .mobile-cell-input:focus {
-    background: #eff6ff;
-    box-shadow: inset 0 0 0 2px #2563eb;
-  }
-
-  .mobile-readonly {
+  .mobile-scroll-hint {
     display: block;
-    text-align: right;
-    padding: 0 8px;
-    color: #475569;
   }
 
-  .mobile-row-exact td {
-    background: #eaf8ef !important;
+  .desktop-only {
+    display: none !important;
   }
 
-  .mobile-row-within_tolerance td {
-    background: #fff3e6 !important;
-  }
-
-  .mobile-row-out_of_tolerance td {
-    background: #fdecec !important;
-  }
-
-  .mobile-row-incomplete td {
-    background: #f3f4f6 !important;
-  }
-
-  .mobile-row-total td {
-    background: #e8f1fb !important;
-    font-weight: 700;
-  }
-
-  .mobile-row-total .mobile-sticky-col {
-    background: #e8f1fb !important;
+  .mobile-only {
+    display: block !important;
   }
 
   .app-footer-bar {
@@ -960,6 +1011,21 @@ textarea {
 
   .feedback-button {
     bottom: 52px;
+  }
+}
+
+/* Also force mobile table on touch laptops/tablets even if wider than 900px. */
+@media (hover: none) and (pointer: coarse) {
+  .mobile-scroll-hint {
+    display: block;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: block !important;
   }
 }
 
