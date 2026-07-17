@@ -732,6 +732,24 @@ textarea {
 }
 
 @media (max-width: 900px) {
+  html,
+  body {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tool-shell {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .app-header {
     padding: 8px;
   }
@@ -793,19 +811,22 @@ textarea {
   }
 
   .grid-scroll-area {
-    margin: 0 8px;
-    flex: 1;
-    min-height: 0;
+    margin: 0 8px 8px;
+    flex: 1 1 auto;
+    /* Prevent the grid from collapsing to 0 when chrome is tall. */
+    min-height: 50dvh;
   }
 
   .mobile-grid-panel {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     height: 100%;
+    min-height: 50dvh;
   }
 
   .mobile-table-wrap {
     min-width: 100%;
+    min-height: 100%;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -979,5 +1000,117 @@ textarea {
   .excel-grid-shell .ag-cell-editor input {
     font-size: 16px !important;
     min-height: 38px;
+  }
+}
+
+/* Phone landscape / short screens: page must scroll so the table is reachable. */
+@media (max-width: 900px) and (orientation: landscape), (max-height: 500px) {
+  html,
+  body {
+    height: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tool-shell {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  .app-header {
+    padding: 4px 8px;
+  }
+
+  .header-top {
+    flex-wrap: nowrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .brand-block {
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+
+  .brand-title {
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 28vw;
+  }
+
+  .header-actions {
+    width: auto;
+    flex: 0 0 auto;
+  }
+
+  .btn-action {
+    flex: 0 0 auto;
+    min-height: 30px;
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .header-settings {
+    width: auto;
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .control-stack span {
+    display: none;
+  }
+
+  .control-input {
+    min-height: 28px;
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+
+  .summary-bar {
+    padding: 2px 8px;
+    gap: 3px;
+  }
+
+  .summary-card {
+    padding: 2px 4px;
+  }
+
+  .summary-card-label {
+    display: none;
+  }
+
+  .summary-card-value {
+    font-size: 11px;
+  }
+
+  .grid-scroll-area {
+    flex: none;
+    height: 62dvh;
+    min-height: 220px;
+    margin: 0 8px 8px;
+  }
+
+  .mobile-grid-panel {
+    height: 100%;
+    min-height: 100%;
+  }
+
+  .app-footer-bar {
+    padding: 4px 8px;
+  }
+
+  .privacy-line {
+    padding: 2px 8px 6px;
+  }
+
+  .feedback-button {
+    display: none;
   }
 }
