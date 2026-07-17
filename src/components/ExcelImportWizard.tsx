@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { useApp } from '@/context/AppContext'
-import { mapSheetToRows, parseExcelFile, previewRows, suggestColumnMapping } from '@/lib/excel'
+import { mapSheetToRows, parseExcelFile, previewRows, suggestColumnMapping, editableImportHeaders } from '@/lib/excel'
 import type { ColumnMapping, ParsedWorkbook } from '@/types'
 
 type Step = 1 | 2 | 3 | 4 | 5
@@ -214,7 +214,7 @@ export function ExcelImportWizard() {
                     className="control-input"
                   >
                     <option value="">{translate('import.notSpecified')}</option>
-                    {sheet.headers.map((header) => (
+                    {editableImportHeaders(sheet.headers).map((header) => (
                       <option key={header} value={header}>
                         {header}
                       </option>

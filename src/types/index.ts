@@ -55,3 +55,21 @@ export interface ParsedWorkbook {
 export type EditableInvoiceField = keyof Pick<InvoiceRow, 'net' | 'tax' | 'gross'>
 
 export const EDITABLE_INVOICE_FIELDS: EditableInvoiceField[] = ['net', 'tax', 'gross']
+
+/** Visual column order for paste alignment (locked columns receive no user values). */
+export const PASTE_COLUMN_ORDER = [
+  'net',
+  'tax',
+  'theoreticalNet',
+  'theoreticalTax',
+  'gross',
+  'theoreticalGross',
+  'difference',
+  'issues',
+] as const
+
+export type PasteColumnId = (typeof PASTE_COLUMN_ORDER)[number]
+
+export function isEditableInvoiceField(field: string): field is EditableInvoiceField {
+  return (EDITABLE_INVOICE_FIELDS as readonly string[]).includes(field)
+}

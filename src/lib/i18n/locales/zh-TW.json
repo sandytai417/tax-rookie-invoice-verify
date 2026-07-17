@@ -73,7 +73,7 @@
     "previewTitle": "資料預覽",
     "sheetLabel": "工作表",
     "mappingTitle": "欄位對應",
-    "mappingDesc": "請對應未稅額、稅額、總價欄位。",
+    "mappingDesc": "請對應未稅額、稅額、總價欄位。理論欄為自動計算，不可匯入。",
     "notSpecified": "（不指定）",
     "confirmTitle": "確認匯入",
     "errors": {

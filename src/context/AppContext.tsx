@@ -26,7 +26,7 @@ import type {
   ThemeMode,
   TolerancePreset,
 } from '@/types'
-import { EDITABLE_INVOICE_FIELDS } from '@/types'
+import { PASTE_COLUMN_ORDER, isEditableInvoiceField } from '@/types'
 
 const LOCALE_KEY = 'tri-locale'
 const THEME_KEY = 'tri-theme'
@@ -56,7 +56,7 @@ interface AppContextValue {
   importWizardOpen: boolean
   setImportWizardOpen: (open: boolean) => void
   replaceRowsFromImport: (imported: InvoiceRow[]) => void
-  applyPaste: (matrix: string[][], startRowIndex: number, field: EditableInvoiceField) => void
+  applyPaste: (matrix: string[][], startRowIndex: number, startColumn: string) => void
   updateRow: (id: string, field: EditableInvoiceField, value: number | null) => void
 }
 
@@ -92,8 +92,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemeMode>('system')
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light')
   const [taxRate, setTaxRateState] = useState(5)
-  const [tolerancePreset, setTolerancePresetState] = useState<TolerancePreset>('0.01')
-  const [customTolerance, setCustomToleranceState] = useState(0.01)
+  const [tolerancePreset, setTolerancePresetState] = useState<TolerancePreset>('0.5')
+  const [customTolerance, setCustomToleranceState] = useState(0.5)
   const [rows, setRows] = useState<InvoiceRow[]>(createInitialRows)
   const [importWizardOpen, setImportWizardOpen] = useState(false)
 
@@ -105,7 +105,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const storedPreset = window.localStorage.getItem(TOLERANCE_PRESET_KEY) as TolerancePreset | null
     if (storedPreset) setTolerancePresetState(storedPreset)
     const storedCustom = window.localStorage.getItem(TOLERANCE_CUSTOM_KEY)
-    if (storedCustom) setCustomToleranceState(Number(storedCustom) || 0.01)
+    if (storedCustom) setCustomToleranceState(Number(storedCustom) || 0.5)
   }, [])
 
   useEffect(() => {
@@ -166,6 +166,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const updateRow = useCallback((id: string, field: EditableInvoiceField, value: number | null) => {
     if (id === '__total__') return
+    if (!isEditableInvoiceField(field)) return
     setRows((current) =>
       ensureTrailingRows(current.map((row) => (row.id === id ? { ...row, [field]: value } : row))),
     )
@@ -176,36 +177,53 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const applyPaste = useCallback(
-    (matrix: string[][], startRowIndex: number, field: EditableInvoiceField) => {
-      const fieldIndex = EDITABLE_INVOICE_FIELDS.indexOf(field)
+    (matrix: string[][], startRowIndex: number, startColumn: string) => {
       setRows((current) => {
         const next = [...current]
-        const isSingleColumn = matrix.every((row) => row.length === 1)
+        const isSingleColumn = matrix.every((row) => row.length <= 1)
         // startRowIndex is display index (0 = total row); map to data rows
         const dataStart = Math.max(0, startRowIndex - 1)
+        const width = Math.max(0, ...matrix.map((row) => row.length))
+        if (width === 0) return current
 
-        if (isSingleColumn) {
-          matrix.forEach((row, offset) => {
-            const targetIndex = dataStart + offset
-            while (targetIndex >= next.length) next.push(createEmptyRow())
-            next[targetIndex] = {
-              ...next[targetIndex],
-              [field]: parseAmount(row[0] ?? ''),
-            }
-          })
-          return ensureTrailingRows(next)
-        }
+        const pasteStart = PASTE_COLUMN_ORDER.indexOf(
+          startColumn as (typeof PASTE_COLUMN_ORDER)[number],
+        )
+        const remainingPasteColumns =
+          pasteStart >= 0
+            ? PASTE_COLUMN_ORDER.slice(pasteStart)
+            : [...PASTE_COLUMN_ORDER]
+
+        const remainingEditable = remainingPasteColumns.filter(isEditableInvoiceField)
+        const singleTarget =
+          (isEditableInvoiceField(startColumn) ? startColumn : remainingEditable[0]) ?? 'net'
+
+        // Narrow pastes (e.g. 未稅/稅額/總價 only) map to editable fields.
+        // Wider pastes align to the on-screen column order and skip locked columns.
+        const useEditableOnly = width <= remainingEditable.length
 
         matrix.forEach((row, offset) => {
           const targetIndex = dataStart + offset
           while (targetIndex >= next.length) next.push(createEmptyRow())
           const target = next[targetIndex]
-          next[targetIndex] = {
-            ...target,
-            net: parseAmount(row[fieldIndex] ?? row[0] ?? '') ?? target.net,
-            tax: parseAmount(row[fieldIndex + 1] ?? row[1] ?? '') ?? target.tax,
-            gross: parseAmount(row[fieldIndex + 2] ?? row[2] ?? '') ?? target.gross,
+          const updates: Partial<InvoiceRow> = {}
+
+          if (isSingleColumn) {
+            updates[singleTarget] = parseAmount(row[0] ?? '')
+          } else if (useEditableOnly) {
+            remainingEditable.forEach((editableField, columnIndex) => {
+              if (columnIndex >= row.length) return
+              updates[editableField] = parseAmount(row[columnIndex] ?? '')
+            })
+          } else {
+            remainingPasteColumns.forEach((columnId, columnIndex) => {
+              if (columnIndex >= row.length) return
+              if (!isEditableInvoiceField(columnId)) return
+              updates[columnId] = parseAmount(row[columnIndex] ?? '')
+            })
           }
+
+          next[targetIndex] = { ...target, ...updates }
         })
         return ensureTrailingRows(next)
       })

@@ -29,7 +29,7 @@ import {
 import { formatAmount, parseAmount } from '@/lib/numbers'
 import { parseClipboardMatrix } from '@/lib/verification'
 import type { ComputedInvoiceRow, EditableInvoiceField } from '@/types'
-import { EDITABLE_INVOICE_FIELDS } from '@/types'
+import { EDITABLE_INVOICE_FIELDS, PASTE_COLUMN_ORDER } from '@/types'
 
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-quartz.css'
@@ -66,7 +66,7 @@ export function InvoiceGrid() {
   const dragSelectingRef = useRef(false)
   const extendSelectionRef = useRef(false)
   const [isTouchDevice, setIsTouchDevice] = useState(false)
-  const pasteAnchorRef = useRef<{ rowIndex: number; field: EditableInvoiceField }>({
+  const pasteAnchorRef = useRef<{ rowIndex: number; field: string }>({
     rowIndex: 1,
     field: 'net',
   })
@@ -90,10 +90,10 @@ export function InvoiceGrid() {
   }, [])
 
   const syncPasteAnchor = useCallback((coord: GridCoord) => {
-    if (!EDITABLE_INVOICE_FIELDS.includes(coord.colId as EditableInvoiceField)) return
+    if (!(PASTE_COLUMN_ORDER as readonly string[]).includes(coord.colId)) return
     pasteAnchorRef.current = {
       rowIndex: coord.rowIndex,
-      field: coord.colId as EditableInvoiceField,
+      field: coord.colId,
     }
   }, [])
 
@@ -101,7 +101,7 @@ export function InvoiceGrid() {
     (next: GridSelection | null) => {
       setSelection(next)
       const topLeft = selectionTopLeft(next, GRID_COLUMN_IDS)
-      if (topLeft && EDITABLE_INVOICE_FIELDS.includes(topLeft.colId as EditableInvoiceField)) {
+      if (topLeft && (PASTE_COLUMN_ORDER as readonly string[]).includes(topLeft.colId)) {
         syncPasteAnchor(topLeft)
       }
     },
@@ -178,10 +178,15 @@ export function InvoiceGrid() {
         editable: false,
         width: 130,
         type: 'numericColumn',
+        cellClass: 'excel-locked-cell',
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
         headerClass: 'excel-col-header excel-num-header excel-calc-header',
         valueFormatter: (params) => amountFormatter(params.value),
+        suppressKeyboardEvent: (params) => {
+          const key = params.event.key
+          return key.length === 1 || key === 'Backspace' || key === 'Delete' || key === 'F2'
+        },
       },
       {
         field: 'theoreticalTax',
@@ -189,10 +194,15 @@ export function InvoiceGrid() {
         editable: false,
         width: 120,
         type: 'numericColumn',
+        cellClass: 'excel-locked-cell',
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
         headerClass: 'excel-col-header excel-num-header excel-calc-header',
         valueFormatter: (params) => amountFormatter(params.value),
+        suppressKeyboardEvent: (params) => {
+          const key = params.event.key
+          return key.length === 1 || key === 'Backspace' || key === 'Delete' || key === 'F2'
+        },
       },
       {
         field: 'gross',
@@ -213,10 +223,15 @@ export function InvoiceGrid() {
         editable: false,
         width: 120,
         type: 'numericColumn',
+        cellClass: 'excel-locked-cell',
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
         headerClass: 'excel-col-header excel-num-header excel-calc-header',
         valueFormatter: (params) => amountFormatter(params.value),
+        suppressKeyboardEvent: (params) => {
+          const key = params.event.key
+          return key.length === 1 || key === 'Backspace' || key === 'Delete' || key === 'F2'
+        },
       },
       {
         field: 'difference',
@@ -224,10 +239,15 @@ export function InvoiceGrid() {
         editable: false,
         width: 90,
         type: 'numericColumn',
+        cellClass: 'excel-locked-cell',
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
         headerClass: 'excel-col-header excel-num-header excel-calc-header',
         valueFormatter: (params) => amountFormatter(params.value),
+        suppressKeyboardEvent: (params) => {
+          const key = params.event.key
+          return key.length === 1 || key === 'Backspace' || key === 'Delete' || key === 'F2'
+        },
       },
       {
         field: 'issues',
@@ -235,10 +255,15 @@ export function InvoiceGrid() {
         editable: false,
         flex: 1,
         minWidth: 180,
+        cellClass: 'excel-locked-cell',
         cellClassRules: selectionClassRules,
         headerClass: 'excel-col-header excel-calc-header',
         wrapText: true,
         autoHeight: true,
+        suppressKeyboardEvent: (params) => {
+          const key = params.event.key
+          return key.length === 1 || key === 'Backspace' || key === 'Delete' || key === 'F2'
+        },
         valueFormatter: (params) => {
           if (!params.data || params.data.isTotalRow) return ''
           const issues = params.data.issues ?? []

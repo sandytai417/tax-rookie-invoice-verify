@@ -14,7 +14,7 @@ export function getToleranceValue(preset: TolerancePreset, customValue: number):
     case 'custom':
       return Math.max(0, customValue)
     default:
-      return 0.01
+      return 0.5
   }
 }
 

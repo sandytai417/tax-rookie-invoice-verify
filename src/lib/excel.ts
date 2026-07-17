@@ -12,6 +12,19 @@ function normalizeHeader(value: string): string {
   return value.trim().toLowerCase().replace(/\s+/g, '')
 }
 
+/** Computed / theoretical columns must never map into editable net/tax/gross. */
+export function isLockedComputedHeader(header: string): boolean {
+  const normalized = normalizeHeader(header)
+  return /理論|theoretical|expectednet|expectedtax|expectedtotal|expectedgross|差異|difference|問題|issue/.test(
+    normalized,
+  )
+}
+
+/** Headers eligible for mapping to editable invoice fields. */
+export function editableImportHeaders(headers: string[]): string[] {
+  return headers.filter((header) => !isLockedComputedHeader(header))
+}
+
 function sheetToData(sheet: XLSX.WorkSheet): SheetData {
   const matrix = XLSX.utils.sheet_to_json<(string | number)[]>(sheet, {
     header: 1,
@@ -45,6 +58,7 @@ export function suggestColumnMapping(headers: string[]): ColumnMapping {
   }
 
   for (const header of headers) {
+    if (isLockedComputedHeader(header)) continue
     const normalized = normalizeHeader(header)
     for (const [field, aliases] of Object.entries(HEADER_ALIASES) as Array<
       [keyof ColumnMapping, string[]]
@@ -75,7 +89,10 @@ export async function parseExcelFile(file: File): Promise<ParsedWorkbook> {
 }
 
 export function mapSheetToRows(sheet: SheetData, mapping: ColumnMapping): InvoiceRow[] {
-  const headerIndex = (header: string | null) => (header ? sheet.headers.indexOf(header) : -1)
+  const headerIndex = (header: string | null) => {
+    if (!header || isLockedComputedHeader(header)) return -1
+    return sheet.headers.indexOf(header)
+  }
 
   const netIndex = headerIndex(mapping.net)
   const taxIndex = headerIndex(mapping.tax)

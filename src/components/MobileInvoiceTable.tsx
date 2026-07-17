@@ -154,12 +154,12 @@ export function MobileInvoiceTable() {
               </td>
               <td>{renderInput(row, 'net')}</td>
               <td>{renderInput(row, 'tax')}</td>
-              <td>{renderReadonly(row.theoreticalNet)}</td>
-              <td>{renderReadonly(row.theoreticalTax)}</td>
+              <td className="mobile-locked-cell">{renderReadonly(row.theoreticalNet)}</td>
+              <td className="mobile-locked-cell">{renderReadonly(row.theoreticalTax)}</td>
               <td>{renderInput(row, 'gross')}</td>
-              <td>{renderReadonly(row.theoreticalGross)}</td>
-              <td>{renderReadonly(row.difference)}</td>
-              <td>{renderIssues(row)}</td>
+              <td className="mobile-locked-cell">{renderReadonly(row.theoreticalGross)}</td>
+              <td className="mobile-locked-cell">{renderReadonly(row.difference)}</td>
+              <td className="mobile-locked-cell">{renderIssues(row)}</td>
             </tr>
           ))}
         </tbody>
