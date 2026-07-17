@@ -1,5 +1,5 @@
 import { round2 } from './numbers'
-import type { ComputedOrderLineRow, OrderLineRow, RowStatus, TolerancePreset } from '@/types'
+import type { ComputedInvoiceRow, InvoiceRow, RowStatus, TolerancePreset } from '@/types'
 
 export function getToleranceValue(preset: TolerancePreset, customValue: number): number {
   switch (preset) {
@@ -18,85 +18,98 @@ export function getToleranceValue(preset: TolerancePreset, customValue: number):
   }
 }
 
-export function computeTheoreticalAmount(
-  quantity: number | null,
-  unitPrice: number | null,
+function rateDecimal(taxRatePercent: number): number {
+  return taxRatePercent / 100
+}
+
+/** C: 理論未稅額 = B - B/(1+稅率) */
+export function computeTheoreticalNet(tax: number | null, taxRatePercent: number): number | null {
+  if (tax === null) return null
+  const rate = rateDecimal(taxRatePercent)
+  return round2(tax - tax / (1 + rate))
+}
+
+/** D: 理論稅額 = A * 稅率 */
+export function computeTheoreticalTax(net: number | null, taxRatePercent: number): number | null {
+  if (net === null) return null
+  return round2(net * rateDecimal(taxRatePercent))
+}
+
+/** F: 理論總價 = C + D */
+export function computeTheoreticalGross(
+  theoreticalNet: number | null,
+  theoreticalTax: number | null,
 ): number | null {
-  if (quantity === null || unitPrice === null) return null
-  return round2(quantity * unitPrice)
+  if (theoreticalNet === null || theoreticalTax === null) return null
+  return round2(theoreticalNet + theoreticalTax)
+}
+
+function withinTolerance(actual: number, expected: number, tolerance: number): boolean {
+  return Math.abs(round2(actual - expected)) <= tolerance
 }
 
 function resolveStatus(
-  quantity: number | null,
-  unitPrice: number | null,
-  amount: number | null,
-  theoreticalAmount: number | null,
+  row: InvoiceRow,
+  theoreticalNet: number | null,
+  theoreticalTax: number | null,
+  theoreticalGross: number | null,
   tolerance: number,
 ): RowStatus {
-  const values = [quantity, unitPrice, amount]
-  const filled = values.filter((value) => value !== null)
-
+  const filled = [row.net, row.tax, row.gross].filter((value) => value !== null)
   if (filled.length === 0) return 'empty'
-  if (quantity === null || unitPrice === null || amount === null || theoreticalAmount === null) {
-    return 'incomplete'
-  }
 
-  const difference = round2(amount - theoreticalAmount)
-  const absDiff = Math.abs(difference)
+  const comparisons: Array<[number | null, number | null]> = [
+    [row.net, theoreticalNet],
+    [row.tax, theoreticalTax],
+    [row.gross, theoreticalGross],
+  ]
 
-  if (absDiff === 0) return 'exact'
-  if (absDiff <= tolerance) return 'within_tolerance'
+  const completePairs = comparisons.filter(
+    ([actual, expected]) => actual !== null && expected !== null,
+  ) as Array<[number, number]>
+
+  if (completePairs.length === 0) return 'incomplete'
+
+  const allExact = completePairs.every(([actual, expected]) => round2(actual - expected) === 0)
+  if (allExact) return 'exact'
+
+  const allWithin = completePairs.every(([actual, expected]) =>
+    withinTolerance(actual, expected, tolerance),
+  )
+  if (allWithin) return 'within_tolerance'
+
   return 'out_of_tolerance'
 }
 
-export function isRowEmpty(row: OrderLineRow): boolean {
-  return (
-    !row.createdDate &&
-    !row.orderId &&
-    !row.itemName &&
-    row.quantity === null &&
-    row.unitPrice === null &&
-    row.amount === null &&
-    !row.remarks
-  )
+export function computeRow(
+  row: InvoiceRow,
+  index: number,
+  taxRatePercent: number,
+  tolerance: number,
+): ComputedInvoiceRow {
+  const theoreticalNet = computeTheoreticalNet(row.tax, taxRatePercent)
+  const theoreticalTax = computeTheoreticalTax(row.net, taxRatePercent)
+  const theoreticalGross = computeTheoreticalGross(theoreticalNet, theoreticalTax)
+
+  return {
+    ...row,
+    index,
+    theoreticalNet,
+    theoreticalTax,
+    theoreticalGross,
+    status: resolveStatus(row, theoreticalNet, theoreticalTax, theoreticalGross, tolerance),
+  }
 }
 
-function hasLineItemData(row: OrderLineRow): boolean {
-  return (
-    Boolean(row.itemName) ||
-    row.quantity !== null ||
-    row.unitPrice !== null ||
-    row.amount !== null ||
-    Boolean(row.remarks)
-  )
-}
-
-function hasRowContent(row: OrderLineRow): boolean {
-  return hasLineItemData(row) || Boolean(row.orderId) || Boolean(row.createdDate)
-}
-
-export function resolveOrderLineFields(rows: OrderLineRow[]): OrderLineRow[] {
-  let lastDate: string | null = null
-  let lastOrderId: string | null = null
-
-  return rows.map((row) => {
-    if (isRowEmpty(row)) return row
-
-    const createdDate = row.createdDate ?? (hasRowContent(row) ? lastDate : null)
-    const orderId = row.orderId ?? (hasLineItemData(row) ? lastOrderId : null)
-
-    if (createdDate) lastDate = createdDate
-    if (orderId) lastOrderId = orderId
-
-    return { ...row, createdDate, orderId }
-  })
+export function isRowEmpty(row: InvoiceRow): boolean {
+  return row.net === null && row.tax === null && row.gross === null
 }
 
 export function ensureTrailingRows(
-  rows: OrderLineRow[],
+  rows: InvoiceRow[],
   minEmpty = 5,
   minTotal = 20,
-): OrderLineRow[] {
+): InvoiceRow[] {
   const next = [...rows]
   let trailingEmpty = 0
 
@@ -113,61 +126,68 @@ export function ensureTrailingRows(
   return next
 }
 
-export function computeRow(
-  row: OrderLineRow,
-  index: number,
+export function createTotalRow(rows: ComputedInvoiceRow[]): ComputedInvoiceRow {
+  const active = rows.filter((row) => row.status !== 'empty')
+
+  const sum = (pick: (row: ComputedInvoiceRow) => number | null) =>
+    round2(active.reduce((acc, row) => acc + (pick(row) ?? 0), 0))
+
+  const net = active.some((row) => row.net !== null) ? sum((row) => row.net) : null
+  const tax = active.some((row) => row.tax !== null) ? sum((row) => row.tax) : null
+  const gross = active.some((row) => row.gross !== null) ? sum((row) => row.gross) : null
+  const theoreticalNet = active.some((row) => row.theoreticalNet !== null)
+    ? sum((row) => row.theoreticalNet)
+    : null
+  const theoreticalTax = active.some((row) => row.theoreticalTax !== null)
+    ? sum((row) => row.theoreticalTax)
+    : null
+  const theoreticalGross = active.some((row) => row.theoreticalGross !== null)
+    ? sum((row) => row.theoreticalGross)
+    : null
+
+  return {
+    id: '__total__',
+    index: 0,
+    net,
+    tax,
+    gross,
+    theoreticalNet,
+    theoreticalTax,
+    theoreticalGross,
+    status: 'total',
+    isTotalRow: true,
+  }
+}
+
+export function computeRows(
+  rows: InvoiceRow[],
+  taxRatePercent: number,
   tolerance: number,
-): ComputedOrderLineRow {
-  const theoreticalAmount = computeTheoreticalAmount(row.quantity, row.unitPrice)
-  const difference =
-    row.amount !== null && theoreticalAmount !== null
-      ? round2(row.amount - theoreticalAmount)
-      : null
-
-  return {
-    ...row,
-    index,
-    theoreticalAmount,
-    difference,
-    status: resolveStatus(
-      row.quantity,
-      row.unitPrice,
-      row.amount,
-      theoreticalAmount,
-      tolerance,
-    ),
-  }
-}
-
-export function computeRows(rows: OrderLineRow[], tolerance: number): ComputedOrderLineRow[] {
-  return resolveOrderLineFields(rows).map((row, index) => computeRow(row, index + 1, tolerance))
-}
-
-export function summarizeRows(rows: ComputedOrderLineRow[]) {
-  const activeRows = rows.filter((row) => row.status !== 'empty')
-
-  const orderIds = new Set(
-    activeRows.map((row) => row.orderId).filter((id): id is string => Boolean(id)),
+): ComputedInvoiceRow[] {
+  const dataRows = rows.map((row, index) =>
+    computeRow(row, index + 1, taxRatePercent, tolerance),
   )
+  return [createTotalRow(dataRows), ...dataRows]
+}
+
+export function summarizeRows(rows: ComputedInvoiceRow[]) {
+  const dataRows = rows.filter((row) => !row.isTotalRow && row.status !== 'empty')
 
   return {
-    lineCount: activeRows.length,
-    orderCount: orderIds.size,
-    amountTotal: activeRows.reduce((sum, row) => sum + (row.amount ?? 0), 0),
-    anomalyCount: activeRows.filter((row) => row.status === 'out_of_tolerance').length,
+    rowCount: dataRows.length,
+    anomalyCount: dataRows.filter((row) => row.status === 'out_of_tolerance').length,
+    netTotal: dataRows.reduce((sum, row) => sum + (row.net ?? 0), 0),
+    taxTotal: dataRows.reduce((sum, row) => sum + (row.tax ?? 0), 0),
+    grossTotal: dataRows.reduce((sum, row) => sum + (row.gross ?? 0), 0),
   }
 }
 
-export function createEmptyRow(id?: string): OrderLineRow {
+export function createEmptyRow(id?: string): InvoiceRow {
   return {
     id: id ?? crypto.randomUUID(),
-    createdDate: null,
-    orderId: null,
-    itemName: null,
-    quantity: null,
-    unitPrice: null,
-    amount: null,
-    remarks: null,
+    net: null,
+    tax: null,
+    gross: null,
   }
 }
 
@@ -178,38 +198,4 @@ export function parseClipboardMatrix(text: string): string[][] {
     .split('\n')
     .filter((line) => line.length > 0)
     .map((line) => line.split('\t').map((cell) => cell.trim()))
-}
-
-export function getRowSpan(
-  rows: ComputedOrderLineRow[],
-  rowIndex: number,
-  field: 'createdDate' | 'orderId',
-): number {
-  const current = rows[rowIndex]
-  const value = current[field]
-  if (!value) return 1
-
-  if (rowIndex > 0) {
-    const previous = rows[rowIndex - 1]
-    if (field === 'orderId') {
-      if (previous.orderId === value && previous.createdDate === current.createdDate) return 0
-    } else if (previous.createdDate === value) {
-      return 0
-    }
-  }
-
-  let span = 1
-  for (let i = rowIndex + 1; i < rows.length; i++) {
-    const next = rows[i]
-    if (field === 'orderId') {
-      if (next.orderId === value && next.createdDate === current.createdDate) span++
-      else break
-    } else if (next.createdDate === value) {
-      span++
-    } else {
-      break
-    }
-  }
-
-  return span
 }

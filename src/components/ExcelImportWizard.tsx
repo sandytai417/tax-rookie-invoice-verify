@@ -7,24 +7,12 @@ import type { ColumnMapping, ParsedWorkbook } from '@/types'
 
 type Step = 1 | 2 | 3 | 4 | 5
 
-const FIELD_KEYS = [
-  'createdDate',
-  'orderId',
-  'itemName',
-  'quantity',
-  'unitPrice',
-  'amount',
-  'remarks',
-] as const satisfies ReadonlyArray<keyof ColumnMapping>
+const FIELD_KEYS = ['net', 'tax', 'gross'] as const satisfies ReadonlyArray<keyof ColumnMapping>
 
 const EMPTY_MAPPING: ColumnMapping = {
-  createdDate: null,
-  orderId: null,
-  itemName: null,
-  quantity: null,
-  unitPrice: null,
-  amount: null,
-  remarks: null,
+  net: null,
+  tax: null,
+  gross: null,
 }
 
 export function ExcelImportWizard() {
@@ -137,7 +125,7 @@ export function ExcelImportWizard() {
                     checked={selectedSheet === name}
                     onChange={() => {
                       setSelectedSheet(name)
-                      if (workbook) applySheetMapping(name, workbook)
+                      applySheetMapping(name, workbook)
                     }}
                   />
                   <span>{name}</span>

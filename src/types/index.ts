@@ -4,6 +4,7 @@ export type RowStatus =
   | 'out_of_tolerance'
   | 'incomplete'
   | 'empty'
+  | 'total'
 
 export type TolerancePreset = '0' | '0.01' | '0.5' | '1' | 'custom'
 
@@ -11,32 +12,30 @@ export type ThemeMode = 'light' | 'dark' | 'system'
 
 export type Locale = 'en' | 'zh-TW'
 
-export interface OrderLineRow {
+/** Editable invoice amounts: A=net, B=tax, E=gross */
+export interface InvoiceRow {
   id: string
-  createdDate: string | null
-  orderId: string | null
-  itemName: string | null
-  quantity: number | null
-  unitPrice: number | null
-  amount: number | null
-  remarks: string | null
+  net: number | null
+  tax: number | null
+  gross: number | null
 }
 
-export interface ComputedOrderLineRow extends OrderLineRow {
+export interface ComputedInvoiceRow extends InvoiceRow {
   index: number
-  theoreticalAmount: number | null
-  difference: number | null
+  /** C: theoretical net = B - B/(1+rate) */
+  theoreticalNet: number | null
+  /** D: theoretical tax = A * rate */
+  theoreticalTax: number | null
+  /** F: theoretical gross = C + D */
+  theoreticalGross: number | null
   status: RowStatus
+  isTotalRow?: boolean
 }
 
 export interface ColumnMapping {
-  createdDate: string | null
-  orderId: string | null
-  itemName: string | null
-  quantity: string | null
-  unitPrice: string | null
-  amount: string | null
-  remarks: string | null
+  net: string | null
+  tax: string | null
+  gross: string | null
 }
 
 export interface SheetData {
@@ -49,19 +48,6 @@ export interface ParsedWorkbook {
   sheets: Record<string, SheetData>
 }
 
-export type EditableOrderField = keyof Pick<
-  OrderLineRow,
-  'createdDate' | 'orderId' | 'itemName' | 'quantity' | 'unitPrice' | 'amount' | 'remarks'
->
+export type EditableInvoiceField = keyof Pick<InvoiceRow, 'net' | 'tax' | 'gross'>
 
-export const EDITABLE_ORDER_FIELDS: EditableOrderField[] = [
-  'createdDate',
-  'orderId',
-  'itemName',
-  'quantity',
-  'unitPrice',
-  'amount',
-  'remarks',
-]
-
-export const NUMERIC_ORDER_FIELDS = ['quantity', 'unitPrice', 'amount'] as const
+export const EDITABLE_INVOICE_FIELDS: EditableInvoiceField[] = ['net', 'tax', 'gross']

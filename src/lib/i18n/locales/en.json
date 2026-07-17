@@ -1,39 +1,38 @@
 {
   "brand": {
-    "title": "Tax Rookie | Order Verify",
-    "subtitle": "Order line verification for accountants"
+    "title": "Tax Rookie | Invoice Verify",
+    "subtitle": "Invoice verification for accountants"
   },
   "header": {
+    "taxRate": "Tax Rate",
     "tolerance": "Tolerance",
     "language": "Language",
     "theme": "Theme",
     "importExcel": "Import Excel"
   },
   "summary": {
-    "orderCount": "Orders",
-    "lineCount": "Line Items",
-    "amountTotal": "Amount Total",
+    "rowCount": "Rows",
+    "netTotal": "Net Total",
+    "taxTotal": "Tax Total",
+    "grossTotal": "Gross Total",
     "anomalies": "Anomalies"
   },
   "grid": {
-    "index": "#",
-    "createdDate": "Date",
-    "orderId": "Order ID",
-    "itemName": "Item",
-    "quantity": "Qty",
-    "unitPrice": "Unit Price",
-    "amount": "Amount",
-    "theoreticalAmount": "Expected Amount",
-    "difference": "Difference",
-    "remarks": "Remarks",
-    "status": "Status"
+    "total": "Total",
+    "net": "A. Net",
+    "tax": "B. Tax",
+    "theoreticalNet": "C. Theoretical Net",
+    "theoreticalTax": "D. Theoretical Tax",
+    "gross": "E. Gross",
+    "theoreticalGross": "F. Theoretical Gross"
   },
   "status": {
     "exact": "Exact match",
     "within_tolerance": "Within tolerance",
     "out_of_tolerance": "Out of tolerance",
     "incomplete": "Incomplete",
-    "empty": "Empty"
+    "empty": "Empty",
+    "total": "Total"
   },
   "tolerance": {
     "0": "±0",
@@ -59,14 +58,14 @@
     "next": "Next",
     "import": "Import",
     "selectFileTitle": "Select Excel file",
-    "selectFileDesc": "Supports .xlsx and .xls. Merged cells are expanded and date/order columns are forward-filled.",
+    "selectFileDesc": "Supports .xlsx and .xls. Files are processed locally in your browser only.",
     "chooseFile": "Choose Excel file",
     "selectSheetTitle": "Select worksheet",
     "fileLabel": "File",
     "previewTitle": "Preview data",
     "sheetLabel": "Worksheet",
     "mappingTitle": "Column mapping",
-    "mappingDesc": "Columns are auto-suggested from headers. You can adjust them manually.",
+    "mappingDesc": "Map net, tax, and gross columns.",
     "notSpecified": "(Not specified)",
     "confirmTitle": "Confirm import",
     "errors": {
@@ -85,13 +84,13 @@
     "submit": "Submit",
     "cancel": "Cancel",
     "required": "Feedback is required.",
-    "mailtoSubject": "Tax Rookie Order Verify Feedback"
+    "mailtoSubject": "Tax Rookie Invoice Verify Feedback"
   },
   "footer": {
     "privacy": "All data is processed locally in your browser. Nothing is uploaded or stored."
   },
   "empty": {
-    "hint": "Tap a cell to select (double-tap to edit). On mobile, swipe left/right to see all columns. Paste or import from Excel."
+    "hint": "Row 1 is totals. Fill A/B/E; C=B−B/(1+rate), D=A×rate, F=C+D. Row color shows status (green=exact, yellow=tolerance, red=anomaly)."
   },
   "units": {
     "percent": "%"

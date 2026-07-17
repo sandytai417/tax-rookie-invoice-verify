@@ -3,9 +3,9 @@ import { Providers } from '@/components/Providers'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Tax Rookie | Order Verify',
+  title: 'Tax Rookie | Invoice Verify',
   description:
-    'Order line verification tool for accountants. Verify quantity × unit price = amount locally in your browser.',
+    'Invoice verification tool for accountants. Verify net, tax, and gross amounts locally in your browser.',
 }
 
 export const viewport: Viewport = {

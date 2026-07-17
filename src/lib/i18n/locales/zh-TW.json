@@ -1,39 +1,38 @@
 {
   "brand": {
-    "title": "Tax Rookie | Order Verify",
-    "subtitle": "報稅菜鳥｜訂單明細驗算工具"
+    "title": "Tax Rookie | Invoice Verify",
+    "subtitle": "報稅菜鳥｜發票驗算工具"
   },
   "header": {
+    "taxRate": "稅率",
     "tolerance": "容差",
     "language": "語言",
     "theme": "主題",
     "importExcel": "匯入 Excel"
   },
   "summary": {
-    "orderCount": "單號數",
-    "lineCount": "明細筆數",
-    "amountTotal": "金額合計",
+    "rowCount": "資料筆數",
+    "netTotal": "未稅合計",
+    "taxTotal": "稅額合計",
+    "grossTotal": "總價合計",
     "anomalies": "異常筆數"
   },
   "grid": {
-    "index": "#",
-    "createdDate": "建立日期",
-    "orderId": "單號",
-    "itemName": "品名",
-    "quantity": "數量",
-    "unitPrice": "單價",
-    "amount": "金額",
-    "theoreticalAmount": "理論金額",
-    "difference": "差異",
-    "remarks": "備註",
-    "status": "狀態"
+    "total": "合計",
+    "net": "A.未稅額",
+    "tax": "B.稅額",
+    "theoreticalNet": "C.理論未稅額",
+    "theoreticalTax": "D.理論稅額",
+    "gross": "E.總價",
+    "theoreticalGross": "F.理論總價"
   },
   "status": {
     "exact": "完全一致",
     "within_tolerance": "容差範圍內",
     "out_of_tolerance": "超出容差",
     "incomplete": "資料不足",
-    "empty": "空白"
+    "empty": "空白",
+    "total": "合計"
   },
   "tolerance": {
     "0": "±0",
@@ -59,14 +58,14 @@
     "next": "下一步",
     "import": "開始匯入",
     "selectFileTitle": "選擇 Excel 檔案",
-    "selectFileDesc": "支援 .xlsx、.xls。合併儲存格會自動展開，日期與單號會向下填補。",
+    "selectFileDesc": "支援 .xlsx、.xls。檔案只在瀏覽器本機讀取。",
     "chooseFile": "選擇 Excel 檔案",
     "selectSheetTitle": "選擇工作表",
     "fileLabel": "檔案",
     "previewTitle": "資料預覽",
     "sheetLabel": "工作表",
     "mappingTitle": "欄位對應",
-    "mappingDesc": "系統會依欄位名稱自動建議對應，亦可手動調整。",
+    "mappingDesc": "請對應未稅額、稅額、總價欄位。",
     "notSpecified": "（不指定）",
     "confirmTitle": "確認匯入",
     "errors": {
@@ -85,13 +84,13 @@
     "submit": "送出",
     "cancel": "取消",
     "required": "請填寫回饋內容。",
-    "mailtoSubject": "Tax Rookie 訂單明細驗算工具回饋"
+    "mailtoSubject": "Tax Rookie 發票驗算工具回饋"
   },
   "footer": {
     "privacy": "所有資料只在你的瀏覽器處理，不會上傳或儲存。"
   },
   "empty": {
-    "hint": "點擊儲存格輸入（雙擊編輯）；方向鍵移動、Shift+方向鍵選取範圍、拖曳選取多格；點欄位標題選整欄、點列號選整列。手機請左右滑動查看所有欄位。亦可貼上或匯入 Excel。"
+    "hint": "第一列為合計。A/B/E 可填；C=B−B/(1+稅率)、D=A×稅率、F=C+D。列底色顯示狀態（綠=一致、黃=容差內、紅=異常）。"
   },
   "units": {
     "percent": "%"
