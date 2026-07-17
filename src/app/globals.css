@@ -542,6 +542,37 @@ textarea {
   box-shadow: var(--card-shadow);
 }
 
+.feedback-desc {
+  margin: 0 0 10px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.feedback-form-link {
+  display: block;
+  word-break: break-all;
+  color: var(--accent);
+  background: var(--tip-bg);
+  border: 1px solid var(--tip-border);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 12px;
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.feedback-form-link:hover {
+  text-decoration: underline;
+}
+
+.feedback-open-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -1029,6 +1060,19 @@ textarea {
   .mobile-only {
     display: block !important;
   }
+}
+
+/* Sticky touch UI: once locked (session / early script), keep mobile table even in landscape. */
+html.touch-ui .mobile-scroll-hint {
+  display: block;
+}
+
+html.touch-ui .desktop-only {
+  display: none !important;
+}
+
+html.touch-ui .mobile-only {
+  display: block !important;
 }
 
 @media (max-width: 768px) {
