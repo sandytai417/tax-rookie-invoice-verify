@@ -143,7 +143,7 @@ export function MobileInvoiceTable() {
             <th>{bilingualHeader('grid.gross')}</th>
             <th>{bilingualHeader('grid.theoreticalGross')}</th>
             <th>{bilingualHeader('grid.difference')}</th>
-            <th className="mobile-end-col">{bilingualHeader('grid.issues')}</th>
+            <th>{bilingualHeader('grid.issues')}</th>
           </tr>
         </thead>
         <tbody>
@@ -159,7 +159,7 @@ export function MobileInvoiceTable() {
               <td>{renderInput(row, 'gross')}</td>
               <td>{renderReadonly(row.theoreticalGross)}</td>
               <td>{renderReadonly(row.difference)}</td>
-              <td className="mobile-end-col">{renderIssues(row)}</td>
+              <td>{renderIssues(row)}</td>
             </tr>
           ))}
         </tbody>
