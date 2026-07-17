@@ -343,15 +343,15 @@ textarea {
 }
 
 .legend-exact {
-  background: #22c55e;
+  background: #86efac;
 }
 
 .legend-within {
-  background: #eab308;
+  background: #fdba74;
 }
 
 .legend-out {
-  background: #ef4444;
+  background: #fca5a5;
 }
 
 .privacy-line {
@@ -667,42 +667,46 @@ textarea {
   justify-content: flex-end;
 }
 
-.ag-theme-excel .status-exact {
-  color: #15803d;
-}
-
-.ag-theme-excel .status-within {
-  color: #a16207;
-}
-
-.ag-theme-excel .status-out {
-  color: #b91c1c;
-}
-
 .ag-theme-excel .row-status-exact .ag-cell,
 .ag-theme-excel-dark .row-status-exact .ag-cell {
-  background-color: rgba(34, 197, 94, 0.14) !important;
+  background-color: #eaf8ef !important;
 }
 
 .ag-theme-excel .row-status-within_tolerance .ag-cell,
 .ag-theme-excel-dark .row-status-within_tolerance .ag-cell {
-  background-color: rgba(234, 179, 8, 0.16) !important;
+  background-color: #fff3e6 !important;
 }
 
 .ag-theme-excel .row-status-out_of_tolerance .ag-cell,
 .ag-theme-excel-dark .row-status-out_of_tolerance .ag-cell {
-  background-color: rgba(239, 68, 68, 0.14) !important;
+  background-color: #fdecec !important;
 }
 
 .ag-theme-excel .row-status-incomplete .ag-cell,
 .ag-theme-excel-dark .row-status-incomplete .ag-cell {
-  background-color: rgba(148, 163, 184, 0.14) !important;
+  background-color: #f3f4f6 !important;
 }
 
 .ag-theme-excel .row-status-total .ag-cell,
 .ag-theme-excel-dark .row-status-total .ag-cell {
-  background-color: #e0f2fe !important;
+  background-color: #e8f1fb !important;
   font-weight: 700;
+}
+
+.ag-theme-excel-dark .row-status-exact .ag-cell {
+  background-color: rgba(34, 197, 94, 0.12) !important;
+}
+
+.ag-theme-excel-dark .row-status-within_tolerance .ag-cell {
+  background-color: rgba(251, 146, 60, 0.14) !important;
+}
+
+.ag-theme-excel-dark .row-status-out_of_tolerance .ag-cell {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+}
+
+.ag-theme-excel-dark .row-status-incomplete .ag-cell {
+  background-color: rgba(148, 163, 184, 0.12) !important;
 }
 
 .ag-theme-excel-dark .row-status-total .ag-cell {
@@ -869,7 +873,7 @@ textarea {
     min-width: 44px !important;
     width: 44px;
     text-align: center;
-    background: #f8fafc !important;
+    background: #f8fafc;
     font-weight: 600;
     color: #64748b;
   }
@@ -877,6 +881,22 @@ textarea {
   .mobile-table thead .mobile-sticky-col {
     z-index: 4;
     background: #f1f5f9 !important;
+  }
+
+  .mobile-row-exact .mobile-sticky-col {
+    background: #eaf8ef !important;
+  }
+
+  .mobile-row-within_tolerance .mobile-sticky-col {
+    background: #fff3e6 !important;
+  }
+
+  .mobile-row-out_of_tolerance .mobile-sticky-col {
+    background: #fdecec !important;
+  }
+
+  .mobile-row-incomplete .mobile-sticky-col {
+    background: #f3f4f6 !important;
   }
 
   .mobile-cell-input {
@@ -906,54 +926,29 @@ textarea {
     color: #475569;
   }
 
-  .mobile-status {
-    display: block;
-    text-align: center;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 0 4px;
-    white-space: nowrap;
-  }
-
-  .mobile-status-exact {
-    color: #15803d;
-  }
-
-  .mobile-status-within_tolerance {
-    color: #a16207;
-  }
-
-  .mobile-status-out_of_tolerance {
-    color: #b91c1c;
-  }
-
-  .mobile-status-incomplete {
-    color: #64748b;
-  }
-
   .mobile-row-exact td {
-    background: rgba(34, 197, 94, 0.16) !important;
+    background: #eaf8ef !important;
   }
 
   .mobile-row-within_tolerance td {
-    background: rgba(234, 179, 8, 0.18) !important;
+    background: #fff3e6 !important;
   }
 
   .mobile-row-out_of_tolerance td {
-    background: rgba(239, 68, 68, 0.16) !important;
+    background: #fdecec !important;
   }
 
   .mobile-row-incomplete td {
-    background: rgba(148, 163, 184, 0.16) !important;
+    background: #f3f4f6 !important;
   }
 
   .mobile-row-total td {
-    background: #e0f2fe !important;
+    background: #e8f1fb !important;
     font-weight: 700;
   }
 
   .mobile-row-total .mobile-sticky-col {
-    background: #e0f2fe !important;
+    background: #e8f1fb !important;
   }
 
   .app-footer-bar {

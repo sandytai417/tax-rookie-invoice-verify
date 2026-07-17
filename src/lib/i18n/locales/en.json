@@ -29,8 +29,7 @@
     "theoreticalNet": "Expected Net",
     "theoreticalTax": "Expected Tax",
     "gross": "Total",
-    "difference": "Difference",
-    "status": "Status"
+    "theoreticalGross": "Expected Total"
   },
   "status": {
     "exact": "Match",
@@ -95,10 +94,10 @@
   "footer": {
     "privacy": "All data is processed locally in your browser. Nothing is uploaded or stored.",
     "legend": "Status legend",
-    "liveHint": "Values calculate instantly. Row colors update as you type."
+    "liveHint": "Values calculate instantly. Soft row colors show status (green / orange / red)."
   },
   "empty": {
-    "hint": "Tap Net, Tax, or Total to enter values."
+    "hint": "Tap Net, Tax, or Total to enter values. Row colors: light green = match, light orange = within tolerance, light red = out of tolerance."
   },
   "units": {
     "percent": "%"

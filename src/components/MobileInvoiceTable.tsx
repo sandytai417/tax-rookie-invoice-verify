@@ -115,21 +115,6 @@ export function MobileInvoiceTable() {
     return <span className="mobile-readonly">{formatAmount(value, numberLocale)}</span>
   }
 
-  function renderStatus(row: ComputedInvoiceRow) {
-    if (row.isTotalRow || row.status === 'empty') return null
-    const label =
-      row.status === 'exact'
-        ? translate('status.exact')
-        : row.status === 'within_tolerance'
-          ? translate('status.within_tolerance')
-          : row.status === 'out_of_tolerance'
-            ? translate('status.out_of_tolerance')
-            : row.status === 'incomplete'
-              ? translate('status.incomplete')
-              : ''
-    return <span className={`mobile-status mobile-status-${row.status}`}>{label}</span>
-  }
-
   return (
     <div className="mobile-table-wrap" onPaste={handlePaste}>
       <table className="mobile-table">
@@ -141,8 +126,7 @@ export function MobileInvoiceTable() {
             <th>{translate('grid.theoreticalNet')}</th>
             <th>{translate('grid.theoreticalTax')}</th>
             <th>{translate('grid.gross')}</th>
-            <th>{translate('grid.difference')}</th>
-            <th>{translate('grid.status')}</th>
+            <th>{translate('grid.theoreticalGross')}</th>
           </tr>
         </thead>
         <tbody>
@@ -156,8 +140,7 @@ export function MobileInvoiceTable() {
               <td>{renderReadonly(row.theoreticalNet)}</td>
               <td>{renderReadonly(row.theoreticalTax)}</td>
               <td>{renderInput(row, 'gross')}</td>
-              <td>{renderReadonly(row.difference)}</td>
-              <td>{renderStatus(row)}</td>
+              <td>{renderReadonly(row.theoreticalGross)}</td>
             </tr>
           ))}
         </tbody>

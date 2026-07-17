@@ -43,29 +43,8 @@ const GRID_COLUMN_IDS = [
   'theoreticalNet',
   'theoreticalTax',
   'gross',
-  'difference',
-  'status',
+  'theoreticalGross',
 ] as const
-
-function statusLabel(
-  status: ComputedInvoiceRow['status'],
-  translate: (key: string) => string,
-): string {
-  switch (status) {
-    case 'exact':
-      return `● ${translate('status.exact')}`
-    case 'within_tolerance':
-      return `● ${translate('status.within_tolerance')}`
-    case 'out_of_tolerance':
-      return `● ${translate('status.out_of_tolerance')}`
-    case 'incomplete':
-      return `○ ${translate('status.incomplete')}`
-    case 'total':
-      return ''
-    default:
-      return ''
-  }
-}
 
 function coordFromEvent(
   rowIndex: number | null | undefined,
@@ -227,31 +206,16 @@ export function InvoiceGrid() {
         valueFormatter: (params) => amountFormatter(params.value),
       },
       {
-        field: 'difference',
-        headerName: translate('grid.difference'),
+        field: 'theoreticalGross',
+        headerName: translate('grid.theoreticalGross'),
         editable: false,
-        width: 110,
+        flex: 1,
+        minWidth: 120,
         type: 'numericColumn',
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
         headerClass: 'excel-col-header excel-num-header excel-calc-header',
         valueFormatter: (params) => amountFormatter(params.value),
-      },
-      {
-        field: 'status',
-        headerName: translate('grid.status'),
-        editable: false,
-        flex: 1,
-        minWidth: 140,
-        cellClassRules: {
-          ...selectionClassRules,
-          'status-exact': (params) => params.data?.status === 'exact',
-          'status-within': (params) => params.data?.status === 'within_tolerance',
-          'status-out': (params) => params.data?.status === 'out_of_tolerance',
-        },
-        headerClass: 'excel-col-header excel-calc-header',
-        valueFormatter: (params) =>
-          params.data ? statusLabel(params.data.status, translate) : '',
       },
     ],
     [amountFormatter, amountParser, isTouchDevice, selectionClassRules, translate],

@@ -29,8 +29,7 @@
     "theoreticalNet": "理論未稅額",
     "theoreticalTax": "理論稅額",
     "gross": "總價",
-    "difference": "差異",
-    "status": "狀態"
+    "theoreticalGross": "理論總價"
   },
   "status": {
     "exact": "完全一致",
@@ -95,10 +94,10 @@
   "footer": {
     "privacy": "所有資料只在你的瀏覽器處理，不會上傳或儲存。",
     "legend": "狀態圖例",
-    "liveHint": "輸入後即時計算，列底色會自動更新。"
+    "liveHint": "輸入後即時計算，列底色自動顯示狀態（淺綠／淺橘／淺紅）。"
   },
   "empty": {
-    "hint": "點未稅額／稅額／總價即可輸入。"
+    "hint": "點未稅額／稅額／總價即可輸入。超出容差列為淺紅，容差內為淺橘，一致為淺綠。"
   },
   "units": {
     "percent": "%"
