@@ -103,7 +103,7 @@
   },
   "empty": {
     "hint": "Tap Net, Tax, or Total to enter values. Row colors: light green = match, light orange = within tolerance, light red = out of tolerance.",
-    "mobileScrollHint": "← Swipe for Tax / Expected Tax / Expected Total / Diff / Issue →  Out-of-tolerance shows e.g. Net>Expected Net"
+    "mobileScrollHint": "← Swipe for Expected Net / Expected Tax / Expected Total / Diff / Issue →  Out-of-tolerance shows e.g. Net>Expected Net"
   },
   "units": {
     "percent": "%"

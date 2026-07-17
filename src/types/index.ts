@@ -59,9 +59,9 @@ export const EDITABLE_INVOICE_FIELDS: EditableInvoiceField[] = ['net', 'tax', 'g
 /** Visual column order for paste alignment (locked columns receive no user values). */
 export const PASTE_COLUMN_ORDER = [
   'net',
-  'theoreticalNet',
-  'gross',
   'tax',
+  'gross',
+  'theoreticalNet',
   'theoreticalTax',
   'theoreticalGross',
   'difference',

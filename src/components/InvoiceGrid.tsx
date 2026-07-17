@@ -39,9 +39,9 @@ ModuleRegistry.registerModules([AllCommunityModule])
 const GRID_COLUMN_IDS = [
   'index',
   'net',
-  'theoreticalNet',
-  'gross',
   'tax',
+  'gross',
+  'theoreticalNet',
   'theoreticalTax',
   'theoreticalGross',
   'difference',
@@ -181,20 +181,17 @@ export function InvoiceGrid() {
         valueFormatter: (params) => amountFormatter(params.value),
       },
       {
-        field: 'theoreticalNet',
-        headerName: translate('grid.theoreticalNet'),
-        editable: false,
-        width: 130,
+        field: 'tax',
+        headerName: translate('grid.tax'),
+        editable: (params) => !params.data?.isTotalRow,
+        width: 110,
         type: 'numericColumn',
-        cellClass: 'excel-locked-cell',
+        valueParser: amountParser,
+        cellEditorPopup: isTouchDevice,
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
-        headerClass: 'excel-col-header excel-num-header excel-calc-header',
+        headerClass: 'excel-col-header excel-num-header excel-editable-header',
         valueFormatter: (params) => amountFormatter(params.value),
-        suppressKeyboardEvent: (params) => {
-          const key = params.event.key
-          return key.length === 1 || key === 'Backspace' || key === 'Delete' || key === 'F2'
-        },
       },
       {
         field: 'gross',
@@ -210,17 +207,20 @@ export function InvoiceGrid() {
         valueFormatter: (params) => amountFormatter(params.value),
       },
       {
-        field: 'tax',
-        headerName: translate('grid.tax'),
-        editable: (params) => !params.data?.isTotalRow,
-        width: 110,
+        field: 'theoreticalNet',
+        headerName: translate('grid.theoreticalNet'),
+        editable: false,
+        width: 130,
         type: 'numericColumn',
-        valueParser: amountParser,
-        cellEditorPopup: isTouchDevice,
+        cellClass: 'excel-locked-cell',
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
-        headerClass: 'excel-col-header excel-num-header excel-editable-header',
+        headerClass: 'excel-col-header excel-num-header excel-calc-header',
         valueFormatter: (params) => amountFormatter(params.value),
+        suppressKeyboardEvent: (params) => {
+          const key = params.event.key
+          return key.length === 1 || key === 'Backspace' || key === 'Delete' || key === 'F2'
+        },
       },
       {
         field: 'theoreticalTax',

@@ -149,9 +149,9 @@ export function MobileInvoiceTable() {
           <tr>
             <th className="mobile-sticky-col">#</th>
             <th>{bilingualLabel('grid.net')}</th>
-            <th>{bilingualLabel('grid.theoreticalNet')}</th>
-            <th>{bilingualLabel('grid.gross')}</th>
             <th>{bilingualLabel('grid.tax')}</th>
+            <th>{bilingualLabel('grid.gross')}</th>
+            <th>{bilingualLabel('grid.theoreticalNet')}</th>
             <th>{bilingualLabel('grid.theoreticalTax')}</th>
             <th>{bilingualLabel('grid.theoreticalGross')}</th>
             <th>{bilingualLabel('grid.difference')}</th>
@@ -165,9 +165,9 @@ export function MobileInvoiceTable() {
                 {row.isTotalRow ? bilingualLabel('grid.total') : row.index}
               </td>
               <td>{renderInput(row, 'net')}</td>
-              <td className="mobile-locked-cell">{renderReadonly(row.theoreticalNet)}</td>
-              <td>{renderInput(row, 'gross')}</td>
               <td>{renderInput(row, 'tax')}</td>
+              <td>{renderInput(row, 'gross')}</td>
+              <td className="mobile-locked-cell">{renderReadonly(row.theoreticalNet)}</td>
               <td className="mobile-locked-cell">{renderReadonly(row.theoreticalTax)}</td>
               <td className="mobile-locked-cell">{renderReadonly(row.theoreticalGross)}</td>
               <td className="mobile-locked-cell">{renderReadonly(row.difference)}</td>
