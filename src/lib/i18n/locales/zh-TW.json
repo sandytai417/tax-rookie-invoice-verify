@@ -95,11 +95,8 @@
   },
   "footer": {
     "privacy": "所有資料只在你的瀏覽器處理，不會上傳或儲存。",
-    "workflow": "操作流程",
-    "stepImport": "匯入 Excel",
-    "stepEnter": "輸入資料",
-    "stepCheck": "檢查結果",
-    "verify": "驗算"
+    "legend": "狀態圖例",
+    "liveHint": "輸入後即時計算，列底色會自動更新。"
   },
   "empty": {
     "hint": "點未稅額／稅額／總價即可輸入。"

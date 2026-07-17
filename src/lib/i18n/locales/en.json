@@ -95,11 +95,8 @@
   },
   "footer": {
     "privacy": "All data is processed locally in your browser. Nothing is uploaded or stored.",
-    "workflow": "Workflow",
-    "stepImport": "Import Excel",
-    "stepEnter": "Enter data",
-    "stepCheck": "Check results",
-    "verify": "Verify"
+    "legend": "Status legend",
+    "liveHint": "Values calculate instantly. Row colors update as you type."
   },
   "empty": {
     "hint": "Tap Net, Tax, or Total to enter values."
