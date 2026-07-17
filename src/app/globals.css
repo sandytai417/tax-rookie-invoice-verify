@@ -339,6 +339,130 @@ textarea {
   --ag-header-background-color: var(--header-bg);
 }
 
+.ag-theme-excel,
+.ag-theme-excel-dark {
+  --ag-font-family: 'Segoe UI', Calibri, Tahoma, Arial, sans-serif;
+  --ag-font-size: 12px;
+  --ag-grid-size: 3px;
+  --ag-row-height: 22px;
+  --ag-header-height: 24px;
+  --ag-borders: solid 1px;
+  --ag-border-color: #c0c0c0;
+  --ag-background-color: #ffffff;
+  --ag-foreground-color: #000000;
+  --ag-header-background-color: #f2f2f2;
+  --ag-header-foreground-color: #000000;
+  --ag-row-border-color: #c0c0c0;
+  --ag-cell-horizontal-border: solid #c0c0c0;
+  --ag-odd-row-background-color: #ffffff;
+  --ag-range-selection-border-color: #217346;
+}
+
+.ag-theme-excel-dark {
+  --ag-border-color: #505050;
+  --ag-background-color: #1e1e1e;
+  --ag-foreground-color: #f3f3f3;
+  --ag-header-background-color: #2d2d2d;
+  --ag-header-foreground-color: #f3f3f3;
+  --ag-row-border-color: #505050;
+  --ag-cell-horizontal-border: solid #505050;
+  --ag-odd-row-background-color: #1e1e1e;
+  --ag-range-selection-border-color: #6fcf97;
+}
+
+.excel-grid-shell .ag-root-wrapper {
+  border: 1px solid var(--ag-border-color);
+}
+
+.ag-theme-excel .ag-header,
+.ag-theme-excel-dark .ag-header {
+  border-bottom: 1px solid var(--ag-border-color);
+}
+
+.ag-theme-excel .ag-header-cell,
+.ag-theme-excel-dark .ag-header-cell,
+.ag-theme-excel .ag-cell,
+.ag-theme-excel-dark .ag-cell {
+  border-right: 1px solid var(--ag-border-color);
+  border-bottom: 1px solid var(--ag-border-color);
+}
+
+.ag-theme-excel .excel-col-header,
+.ag-theme-excel-dark .excel-col-header {
+  font-weight: 600;
+  text-align: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.ag-theme-excel .excel-row-header,
+.ag-theme-excel-dark .excel-row-header {
+  text-align: center;
+  justify-content: center;
+}
+
+.ag-theme-excel .excel-row-header-cell,
+.ag-theme-excel-dark .excel-row-header-cell {
+  text-align: center;
+  justify-content: center;
+  background: #f2f2f2;
+  color: #666;
+  cursor: default;
+  user-select: none;
+}
+
+.ag-theme-excel-dark .excel-row-header-cell {
+  background: #2d2d2d;
+  color: #b3b3b3;
+}
+
+.ag-theme-excel .ag-cell.cell-selected,
+.ag-theme-excel-dark .ag-cell.cell-selected {
+  background-color: rgba(51, 153, 255, 0.22) !important;
+}
+
+.ag-theme-excel .ag-cell.cell-active,
+.ag-theme-excel-dark .ag-cell.cell-active {
+  outline: 2px solid #217346;
+  outline-offset: -2px;
+  z-index: 2;
+}
+
+.ag-theme-excel-dark .ag-cell.cell-active {
+  outline-color: #6fcf97;
+}
+
+.ag-theme-excel .ag-header-cell.col-selected,
+.ag-theme-excel-dark .ag-header-cell.col-selected {
+  background-color: rgba(51, 153, 255, 0.35) !important;
+}
+
+.ag-theme-excel .ag-cell.row-selected,
+.ag-theme-excel-dark .ag-cell.row-selected {
+  background-color: rgba(51, 153, 255, 0.18) !important;
+}
+
+.ag-theme-excel .ag-cell.cell-merged,
+.ag-theme-excel-dark .ag-cell.cell-merged {
+  background-color: color-mix(in srgb, var(--ag-background-color) 92%, var(--ag-foreground-color));
+  display: flex;
+  align-items: center;
+}
+
+.ag-theme-excel .excel-num-header,
+.ag-theme-excel-dark .excel-num-header {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.excel-grid-shell .ag-cell {
+  user-select: none;
+}
+
+.excel-grid-shell .ag-cell-inline-editing input {
+  user-select: text;
+}
+
 @media (max-width: 768px) and (orientation: portrait) {
   .tool-shell {
     height: auto;
