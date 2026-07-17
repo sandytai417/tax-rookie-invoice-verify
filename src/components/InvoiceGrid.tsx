@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import {
   AllCommunityModule,
@@ -78,6 +78,7 @@ export function InvoiceGrid() {
   )
   const dragSelectingRef = useRef(false)
   const extendSelectionRef = useRef(false)
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
   const pasteAnchorRef = useRef<{ rowIndex: number; field: EditableOrderField }>({
     rowIndex: 0,
     field: 'createdDate',
@@ -85,6 +86,14 @@ export function InvoiceGrid() {
 
   const numberLocale = locale === 'zh-TW' ? 'zh-TW' : 'en-US'
   const themeClass = resolvedTheme === 'dark' ? 'ag-theme-excel-dark' : 'ag-theme-excel'
+
+  useEffect(() => {
+    const media = window.matchMedia('(pointer: coarse)')
+    const update = () => setIsTouchDevice(media.matches)
+    update()
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
 
   const amountParser = useCallback((params: ValueParserParams) => {
     if (params.newValue === '' || params.newValue === null || params.newValue === undefined) {
@@ -421,6 +430,8 @@ export function InvoiceGrid() {
       onPaste={handlePaste}
       onMouseUp={stopDragSelection}
       onMouseLeave={stopDragSelection}
+      onTouchEnd={stopDragSelection}
+      onTouchCancel={stopDragSelection}
     >
       <AgGridReact<ComputedOrderLineRow>
         ref={gridRef}
@@ -444,10 +455,14 @@ export function InvoiceGrid() {
           updateRow(event.data.id, field as EditableOrderField, value)
         }}
         stopEditingWhenCellsLoseFocus
+        singleClickEdit={isTouchDevice}
         enterNavigatesVertically
         enterNavigatesVerticallyAfterEdit
         suppressRowClickSelection
         enableCellSpan
+        alwaysShowHorizontalScroll
+        alwaysShowVerticalScroll={false}
+        suppressMovableColumns
         rowHeight={22}
         headerHeight={24}
         className={themeClass}

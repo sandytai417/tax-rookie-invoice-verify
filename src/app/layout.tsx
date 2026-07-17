@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Providers } from '@/components/Providers'
 import './globals.css'
 
@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   title: 'Tax Rookie | Order Verify',
   description:
     'Order line verification tool for accountants. Verify quantity × unit price = amount locally in your browser.',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({

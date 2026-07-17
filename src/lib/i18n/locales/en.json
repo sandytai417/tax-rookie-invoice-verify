@@ -91,7 +91,7 @@
     "privacy": "All data is processed locally in your browser. Nothing is uploaded or stored."
   },
   "empty": {
-    "hint": "Click a cell to select (double-click to edit). Arrow keys move, Shift+arrow extends selection, drag to select a range. Click a column header for the whole column, row number for the whole row (Ctrl+Space / Shift+Space). Paste or import from Excel."
+    "hint": "Tap a cell to select (double-tap to edit). On mobile, swipe left/right to see all columns. Paste or import from Excel."
   },
   "units": {
     "percent": "%"

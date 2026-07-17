@@ -463,19 +463,45 @@ textarea {
   user-select: text;
 }
 
-@media (max-width: 768px) and (orientation: portrait) {
+@media (max-width: 768px) {
   .tool-shell {
-    height: auto;
+    height: 100dvh;
     min-height: 100dvh;
   }
 
   .grid-scroll-area {
-    overflow: visible;
-    min-height: 60vh;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .grid-panel {
-    min-height: 60vh;
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .excel-grid-shell {
+    height: 100%;
+    touch-action: pan-x pan-y;
+  }
+
+  .excel-grid-shell .ag-root-wrapper {
+    height: 100% !important;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .excel-grid-shell .ag-body-horizontal-scroll,
+  .excel-grid-shell .ag-body-vertical-scroll {
+    opacity: 1;
+  }
+
+  .grid-hint {
+    font-size: 11px;
+    line-height: 1.4;
   }
 }
 
