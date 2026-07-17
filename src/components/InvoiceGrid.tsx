@@ -467,7 +467,7 @@ export function InvoiceGrid() {
         alwaysShowHorizontalScroll
         suppressMovableColumns
         rowHeight={isTouchDevice ? 40 : 28}
-        headerHeight={isTouchDevice ? 36 : 32}
+        headerHeight={isTouchDevice ? 44 : 40}
         className={themeClass}
         domLayout="normal"
       />
