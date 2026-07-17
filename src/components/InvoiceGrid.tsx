@@ -61,13 +61,13 @@ export function InvoiceGrid() {
 
   const gridRef = useRef<AgGridReact<ComputedInvoiceRow>>(null)
   const [selection, setSelection] = useState<GridSelection | null>(
-    createSelection({ rowIndex: 1, colId: 'net' }),
+    createSelection({ rowIndex: 0, colId: 'net' }),
   )
   const dragSelectingRef = useRef(false)
   const extendSelectionRef = useRef(false)
   const [isTouchDevice, setIsTouchDevice] = useState(false)
   const pasteAnchorRef = useRef<{ rowIndex: number; field: string }>({
-    rowIndex: 1,
+    rowIndex: 0,
     field: 'net',
   })
 
@@ -131,20 +131,41 @@ export function InvoiceGrid() {
     [numberLocale],
   )
 
+  const totalRow = useMemo(
+    () => computedRows.find((row) => row.isTotalRow) ?? null,
+    [computedRows],
+  )
+  const dataRows = useMemo(
+    () => computedRows.filter((row) => !row.isTotalRow),
+    [computedRows],
+  )
+
   const columnDefs = useMemo<ColDef<ComputedInvoiceRow>[]>(
     () => [
       {
         field: 'index',
         headerName: '#',
-        width: 48,
+        width: 72,
         pinned: 'left',
         editable: false,
         suppressNavigable: true,
         headerClass: 'excel-row-header',
         cellClass: 'excel-row-header-cell',
         cellClassRules: selectionClassRules,
-        valueFormatter: (params) =>
-          params.data?.isTotalRow ? translate('grid.total') : String(params.value ?? ''),
+        wrapText: true,
+        autoHeight: true,
+        cellRenderer: (params: { data?: ComputedInvoiceRow; value?: number }) => {
+          if (params.data?.isTotalRow) {
+            const [zh, en] = translate('grid.total').split('\n')
+            return (
+              <div className="total-index-label">
+                <span className="total-index-zh">{zh}</span>
+                {en ? <span className="total-index-en">{en}</span> : null}
+              </div>
+            )
+          }
+          return String(params.value ?? '')
+        },
       },
       {
         field: 'net',
@@ -302,6 +323,7 @@ export function InvoiceGrid() {
   const onCellFocused = useCallback(
     (event: CellFocusedEvent<ComputedInvoiceRow>) => {
       if (dragSelectingRef.current) return
+      if (event.rowPinned) return
 
       const coord = coordFromEvent(
         event.rowIndex,
@@ -324,6 +346,7 @@ export function InvoiceGrid() {
     (event: CellMouseDownEvent<ComputedInvoiceRow>) => {
       const nativeEvent = event.event
       if (nativeEvent instanceof MouseEvent && nativeEvent.button !== 0) return
+      if (event.node?.rowPinned || event.data?.isTotalRow) return
 
       const coord = coordFromEvent(event.rowIndex, event.colDef.field)
       if (!coord) return
@@ -383,6 +406,7 @@ export function InvoiceGrid() {
 
   const onCellClicked = useCallback(
     (event: CellClickedEvent<ComputedInvoiceRow>) => {
+      if (event.node?.rowPinned || event.data?.isTotalRow) return
       if (event.colDef.field !== 'index') return
       const coord = coordFromEvent(event.rowIndex, event.colDef.field)
       if (!coord) return
@@ -395,6 +419,7 @@ export function InvoiceGrid() {
     (event: CellKeyDownEvent<ComputedInvoiceRow>) => {
       const keyboardEvent = event.event
       if (!(keyboardEvent instanceof KeyboardEvent)) return
+      if (event.node?.rowPinned || event.data?.isTotalRow) return
 
       const coord = coordFromEvent(event.rowIndex, event.colDef.field)
       if (!coord) return
@@ -465,7 +490,8 @@ export function InvoiceGrid() {
       <AgGridReact<ComputedInvoiceRow>
         ref={gridRef}
         theme="legacy"
-        rowData={computedRows}
+        rowData={dataRows}
+        pinnedTopRowData={totalRow ? [totalRow] : []}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
         getRowId={(params) => params.data.id}

@@ -180,8 +180,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     (matrix: string[][], startRowIndex: number, startColumn: string) => {
       setRows((current) => {
         const next = [...current]
-        // startRowIndex is display index (0 = total row); map to data rows
-        const dataStart = Math.max(0, startRowIndex - 1)
+        // startRowIndex is 0-based data row index (total row is separate / pinned).
+        const dataStart = Math.max(0, startRowIndex)
 
         matrix.forEach((row, offset) => {
           if (row.length === 0) return

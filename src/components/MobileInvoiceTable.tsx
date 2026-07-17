@@ -27,11 +27,13 @@ function MobileAmountInput({
   field,
   value,
   label,
+  dataRowIndex,
 }: {
   rowId: string
   field: EditableInvoiceField
   value: number | null
   label: string
+  dataRowIndex: number
 }) {
   const { updateRow } = useApp()
   const [draft, setDraft] = useState(value == null ? '' : String(value))
@@ -48,6 +50,7 @@ function MobileAmountInput({
       inputMode="decimal"
       enterKeyHint="done"
       data-field={field}
+      data-row-index={dataRowIndex}
       value={draft}
       aria-label={label}
       onFocus={(event) => {
@@ -96,7 +99,10 @@ export function MobileInvoiceTable() {
 
       const field =
         target instanceof HTMLInputElement ? target.dataset.field ?? 'net' : 'net'
-      applyPaste(matrix, 1, field)
+      const rawIndex =
+        target instanceof HTMLInputElement ? Number(target.dataset.rowIndex ?? '0') : 0
+      const dataRowIndex = Number.isFinite(rawIndex) ? Math.max(0, rawIndex) : 0
+      applyPaste(matrix, dataRowIndex, field)
     },
     [applyPaste],
   )
@@ -112,6 +118,7 @@ export function MobileInvoiceTable() {
         field={field}
         value={row[field]}
         label={`${translate(`grid.${field}`)} ${row.index}`}
+        dataRowIndex={Math.max(0, row.index - 1)}
       />
     )
   }
@@ -125,7 +132,7 @@ export function MobileInvoiceTable() {
     return <span className="mobile-issues">{row.issues.join('；')}</span>
   }
 
-  function bilingualHeader(key: string) {
+  function bilingualLabel(key: string) {
     const [zh, en] = translate(key).split('\n')
     return (
       <>
@@ -141,21 +148,21 @@ export function MobileInvoiceTable() {
         <thead>
           <tr>
             <th className="mobile-sticky-col">#</th>
-            <th>{bilingualHeader('grid.net')}</th>
-            <th>{bilingualHeader('grid.theoreticalNet')}</th>
-            <th>{bilingualHeader('grid.gross')}</th>
-            <th>{bilingualHeader('grid.tax')}</th>
-            <th>{bilingualHeader('grid.theoreticalTax')}</th>
-            <th>{bilingualHeader('grid.theoreticalGross')}</th>
-            <th>{bilingualHeader('grid.difference')}</th>
-            <th>{bilingualHeader('grid.issues')}</th>
+            <th>{bilingualLabel('grid.net')}</th>
+            <th>{bilingualLabel('grid.theoreticalNet')}</th>
+            <th>{bilingualLabel('grid.gross')}</th>
+            <th>{bilingualLabel('grid.tax')}</th>
+            <th>{bilingualLabel('grid.theoreticalTax')}</th>
+            <th>{bilingualLabel('grid.theoreticalGross')}</th>
+            <th>{bilingualLabel('grid.difference')}</th>
+            <th>{bilingualLabel('grid.issues')}</th>
           </tr>
         </thead>
         <tbody>
           {computedRows.map((row) => (
             <tr key={row.id} className={statusClass(row.status)}>
               <td className="mobile-sticky-col">
-                {row.isTotalRow ? translate('grid.total').split('\n')[0] : row.index}
+                {row.isTotalRow ? bilingualLabel('grid.total') : row.index}
               </td>
               <td>{renderInput(row, 'net')}</td>
               <td className="mobile-locked-cell">{renderReadonly(row.theoreticalNet)}</td>

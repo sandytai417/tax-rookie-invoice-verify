@@ -40,7 +40,7 @@
     "out_of_tolerance": "超出容差",
     "incomplete": "資料不足",
     "empty": "空白",
-    "total": "合計"
+    "total": "合計\nTotal"
   },
   "tolerance": {
     "0": "±0",
@@ -87,12 +87,14 @@
   "feedback": {
     "button": "Feedback",
     "title": "意見回饋",
-    "message": "回饋內容",
+    "message": "請透過以下表單提供意見回饋：",
+    "openForm": "開啟表單",
     "email": "Email（選填）",
     "submit": "送出",
-    "cancel": "取消",
+    "cancel": "關閉",
     "required": "請填寫回饋內容。",
-    "mailtoSubject": "Tax Rookie 發票驗算工具回饋"
+    "mailtoSubject": "Tax Rookie 發票驗算工具回饋",
+    "formUrl": "https://forms.gle/XM7MziNAFZUFznCF8"
   },
   "footer": {
     "privacy": "所有資料只在你的瀏覽器處理，不會上傳或儲存。",
