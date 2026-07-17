@@ -18,19 +18,40 @@ export function t(
   key: string,
   vars?: Record<string, string | number>,
 ): string {
-  const value = key.split('.').reduce<unknown>((acc, part) => {
-    if (acc && typeof acc === 'object' && part in acc) {
-      return (acc as Record<string, unknown>)[part]
+  // Support keys with dots inside segments (e.g. tolerance.0.5).
+  const parts = key.split('.')
+  let current: unknown = messages
+  let index = 0
+
+  while (index < parts.length) {
+    if (!current || typeof current !== 'object') {
+      current = undefined
+      break
     }
-    return undefined
-  }, messages)
 
-  if (typeof value !== 'string') return key
+    let matched = false
+    for (let end = parts.length; end > index; end -= 1) {
+      const candidate = parts.slice(index, end).join('.')
+      if (candidate in (current as Record<string, unknown>)) {
+        current = (current as Record<string, unknown>)[candidate]
+        index = end
+        matched = true
+        break
+      }
+    }
 
-  if (!vars) return value
+    if (!matched) {
+      current = undefined
+      break
+    }
+  }
+
+  if (typeof current !== 'string') return key
+
+  if (!vars) return current
 
   return Object.entries(vars).reduce(
     (result, [name, replacement]) => result.replace(`{${name}}`, String(replacement)),
-    value,
+    current,
   )
 }

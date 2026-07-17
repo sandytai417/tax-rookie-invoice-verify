@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useApp } from '@/context/AppContext'
+import { exportComputedRowsToExcel } from '@/lib/excel'
 import type { Locale, TolerancePreset } from '@/types'
 
 function UploadIcon() {
@@ -9,6 +10,16 @@ function UploadIcon() {
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M12 16V4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       <path d="M7 9l5-5 5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M4 20h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function DownloadIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 4v12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M7 11l5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       <path d="M4 20h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   )
@@ -35,12 +46,22 @@ export function Header() {
     setTolerancePreset,
     customTolerance,
     setCustomTolerance,
+    tolerance,
     locale,
     setLocale,
+    computedRows,
     setImportWizardOpen,
   } = useApp()
   const [forceCustomRate, setForceCustomRate] = useState(false)
   const isCustomRate = forceCustomRate || !RATE_PRESETS.includes(taxRate as 0 | 5 | 10)
+
+  function handleExport() {
+    exportComputedRowsToExcel(computedRows, {
+      locale,
+      taxRate,
+      tolerance,
+    })
+  }
 
   return (
     <header className="app-header">
@@ -60,6 +81,10 @@ export function Header() {
           >
             <UploadIcon />
             <span>{translate('header.importExcel')}</span>
+          </button>
+          <button type="button" className="btn-action" onClick={handleExport}>
+            <DownloadIcon />
+            <span>{translate('header.exportExcel')}</span>
           </button>
         </div>
 

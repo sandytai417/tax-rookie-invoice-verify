@@ -1,12 +1,43 @@
 import * as XLSX from 'xlsx'
 import { parseAmount } from './numbers'
-import type { ColumnMapping, InvoiceRow, ParsedWorkbook, SheetData } from '@/types'
+import type {
+  ColumnMapping,
+  ComputedInvoiceRow,
+  InvoiceRow,
+  Locale,
+  ParsedWorkbook,
+  SheetData,
+} from '@/types'
 
 const HEADER_ALIASES: Record<keyof ColumnMapping, string[]> = {
   net: ['未稅額', '未稅金額', '未稅', 'net', 'net amount'],
   tax: ['稅額', '稅金', 'tax', 'tax amount'],
   gross: ['總價', '含稅金額', '含稅', '小計', '金額', 'gross', 'total', 'amount'],
 }
+
+const EXPORT_HEADERS_ZH = [
+  '#',
+  '未稅額',
+  '稅額',
+  '總價',
+  '理論未稅額',
+  '理論稅額',
+  '理論總價',
+  '差異',
+  '問題',
+] as const
+
+const EXPORT_HEADERS_EN = [
+  '#',
+  'Net',
+  'Tax',
+  'Total',
+  'Expected Net',
+  'Expected Tax',
+  'Expected Total',
+  'Diff',
+  'Issue',
+] as const
 
 function normalizeHeader(value: string): string {
   return value.trim().toLowerCase().replace(/\s+/g, '')
@@ -110,4 +141,55 @@ export function mapSheetToRows(sheet: SheetData, mapping: ColumnMapping): Invoic
 
 export function previewRows(sheet: SheetData, limit = 8): string[][] {
   return sheet.rows.slice(0, limit)
+}
+
+function cellValue(value: number | null | undefined): number | string {
+  return value == null ? '' : value
+}
+
+/** Download current verification table as .xlsx (editable + calculated columns). */
+export function exportComputedRowsToExcel(
+  rows: ComputedInvoiceRow[],
+  options: { locale: Locale; taxRate: number; tolerance: number },
+): void {
+  const headers = options.locale === 'en' ? [...EXPORT_HEADERS_EN] : [...EXPORT_HEADERS_ZH]
+  const totalLabel = options.locale === 'en' ? 'Total' : '合計'
+
+  const exportRows = rows.filter((row) => row.isTotalRow || row.status !== 'empty')
+
+  const body = exportRows.map((row) => [
+    row.isTotalRow ? totalLabel : row.index,
+    cellValue(row.net),
+    cellValue(row.tax),
+    cellValue(row.gross),
+    cellValue(row.theoreticalNet),
+    cellValue(row.theoreticalTax),
+    cellValue(row.theoreticalGross),
+    cellValue(row.difference),
+    row.isTotalRow ? '' : row.issues.join('；'),
+  ])
+
+  const meta =
+    options.locale === 'en'
+      ? [
+          ['Tax Rate (%)', options.taxRate],
+          ['Tolerance', options.tolerance],
+          [],
+        ]
+      : [
+          ['稅率 (%)', options.taxRate],
+          ['容差', options.tolerance],
+          [],
+        ]
+
+  const sheet = XLSX.utils.aoa_to_sheet([...meta, headers, ...body])
+  sheet['!cols'] = headers.map((_, index) => ({
+    wch: index === 0 ? 8 : index === headers.length - 1 ? 28 : 14,
+  }))
+
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, sheet, 'Invoice Verify')
+
+  const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')
+  XLSX.writeFile(workbook, `tax-rookie-invoice-verify-${stamp}.xlsx`)
 }
