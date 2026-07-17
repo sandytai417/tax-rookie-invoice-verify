@@ -8,23 +8,30 @@
     "tolerance": "容差",
     "language": "語言",
     "theme": "主題",
-    "importExcel": "匯入 Excel"
+    "importExcel": "匯入 Excel / .xlsx",
+    "pasteClipboard": "從剪貼簿貼上 (Ctrl+V)",
+    "customRate": "自訂稅率",
+    "customTolerance": "自訂容差",
+    "tip": "請在未稅額、稅額或總價欄位輸入資料，其餘欄位會自動計算。",
+    "pasteEmpty": "剪貼簿沒有可貼上的資料。",
+    "pasteFailed": "無法讀取剪貼簿，請改用 Ctrl+V 直接貼到表格。"
   },
   "summary": {
-    "rowCount": "資料筆數",
+    "rowCount": "筆數",
     "netTotal": "未稅合計",
     "taxTotal": "稅額合計",
     "grossTotal": "總價合計",
-    "anomalies": "異常筆數"
+    "anomalies": "異常"
   },
   "grid": {
     "total": "合計",
-    "net": "A.未稅額",
-    "tax": "B.稅額",
-    "theoreticalNet": "C.理論未稅額",
-    "theoreticalTax": "D.理論稅額",
-    "gross": "E.總價",
-    "theoreticalGross": "F.理論總價"
+    "net": "未稅額",
+    "tax": "稅額",
+    "theoreticalNet": "理論未稅額",
+    "theoreticalTax": "理論稅額",
+    "gross": "總價",
+    "difference": "差異",
+    "status": "狀態"
   },
   "status": {
     "exact": "完全一致",
@@ -87,10 +94,15 @@
     "mailtoSubject": "Tax Rookie 發票驗算工具回饋"
   },
   "footer": {
-    "privacy": "所有資料只在你的瀏覽器處理，不會上傳或儲存。"
+    "privacy": "所有資料只在你的瀏覽器處理，不會上傳或儲存。",
+    "workflow": "操作流程",
+    "stepImport": "匯入 Excel",
+    "stepEnter": "輸入資料",
+    "stepCheck": "檢查結果",
+    "verify": "驗算"
   },
   "empty": {
-    "hint": "點 A/B/E 可輸入（手機點一下即可打字）。第一列為合計。C=B−B/(1+稅率)、D=A×稅率、F=C+D。列底色＝狀態。"
+    "hint": "點未稅額／稅額／總價即可輸入。"
   },
   "units": {
     "percent": "%"

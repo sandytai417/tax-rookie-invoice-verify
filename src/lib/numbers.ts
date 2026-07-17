@@ -22,3 +22,12 @@ export function formatAmount(value: number | null, locale: string): string {
     maximumFractionDigits: 2,
   })
 }
+
+export function formatMoney(value: number, locale: string): string {
+  return value.toLocaleString(locale, {
+    style: 'currency',
+    currency: locale.startsWith('zh') ? 'TWD' : 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+}

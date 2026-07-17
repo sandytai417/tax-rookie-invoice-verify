@@ -81,6 +81,24 @@ function resolveStatus(
   return 'out_of_tolerance'
 }
 
+function computeDifference(
+  row: InvoiceRow,
+  theoreticalNet: number | null,
+  theoreticalTax: number | null,
+  theoreticalGross: number | null,
+): number | null {
+  if (row.gross !== null && theoreticalGross !== null) {
+    return round2(row.gross - theoreticalGross)
+  }
+  if (row.tax !== null && theoreticalTax !== null) {
+    return round2(row.tax - theoreticalTax)
+  }
+  if (row.net !== null && theoreticalNet !== null) {
+    return round2(row.net - theoreticalNet)
+  }
+  return null
+}
+
 export function computeRow(
   row: InvoiceRow,
   index: number,
@@ -90,6 +108,7 @@ export function computeRow(
   const theoreticalNet = computeTheoreticalNet(row.tax, taxRatePercent)
   const theoreticalTax = computeTheoreticalTax(row.net, taxRatePercent)
   const theoreticalGross = computeTheoreticalGross(theoreticalNet, theoreticalTax)
+  const difference = computeDifference(row, theoreticalNet, theoreticalTax, theoreticalGross)
 
   return {
     ...row,
@@ -97,6 +116,7 @@ export function computeRow(
     theoreticalNet,
     theoreticalTax,
     theoreticalGross,
+    difference,
     status: resolveStatus(row, theoreticalNet, theoreticalTax, theoreticalGross, tolerance),
   }
 }
@@ -144,6 +164,9 @@ export function createTotalRow(rows: ComputedInvoiceRow[]): ComputedInvoiceRow {
   const theoreticalGross = active.some((row) => row.theoreticalGross !== null)
     ? sum((row) => row.theoreticalGross)
     : null
+  const difference = active.some((row) => row.difference !== null)
+    ? sum((row) => row.difference)
+    : null
 
   return {
     id: '__total__',
@@ -154,6 +177,7 @@ export function createTotalRow(rows: ComputedInvoiceRow[]): ComputedInvoiceRow {
     theoreticalNet,
     theoreticalTax,
     theoreticalGross,
+    difference,
     status: 'total',
     isTotalRow: true,
   }

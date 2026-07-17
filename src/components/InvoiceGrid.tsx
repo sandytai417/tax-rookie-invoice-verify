@@ -43,8 +43,29 @@ const GRID_COLUMN_IDS = [
   'theoreticalNet',
   'theoreticalTax',
   'gross',
-  'theoreticalGross',
+  'difference',
+  'status',
 ] as const
+
+function statusLabel(
+  status: ComputedInvoiceRow['status'],
+  translate: (key: string) => string,
+): string {
+  switch (status) {
+    case 'exact':
+      return `● ${translate('status.exact')}`
+    case 'within_tolerance':
+      return `● ${translate('status.within_tolerance')}`
+    case 'out_of_tolerance':
+      return `● ${translate('status.out_of_tolerance')}`
+    case 'incomplete':
+      return `○ ${translate('status.incomplete')}`
+    case 'total':
+      return ''
+    default:
+      return ''
+  }
+}
 
 function coordFromEvent(
   rowIndex: number | null | undefined,
@@ -154,7 +175,7 @@ export function InvoiceGrid() {
         cellEditorPopup: isTouchDevice,
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
-        headerClass: 'excel-col-header excel-num-header',
+        headerClass: 'excel-col-header excel-num-header excel-editable-header',
         valueFormatter: (params) => amountFormatter(params.value),
       },
       {
@@ -167,7 +188,7 @@ export function InvoiceGrid() {
         cellEditorPopup: isTouchDevice,
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
-        headerClass: 'excel-col-header excel-num-header',
+        headerClass: 'excel-col-header excel-num-header excel-editable-header',
         valueFormatter: (params) => amountFormatter(params.value),
       },
       {
@@ -178,7 +199,7 @@ export function InvoiceGrid() {
         type: 'numericColumn',
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
-        headerClass: 'excel-col-header excel-num-header',
+        headerClass: 'excel-col-header excel-num-header excel-calc-header',
         valueFormatter: (params) => amountFormatter(params.value),
       },
       {
@@ -189,7 +210,7 @@ export function InvoiceGrid() {
         type: 'numericColumn',
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
-        headerClass: 'excel-col-header excel-num-header',
+        headerClass: 'excel-col-header excel-num-header excel-calc-header',
         valueFormatter: (params) => amountFormatter(params.value),
       },
       {
@@ -202,20 +223,35 @@ export function InvoiceGrid() {
         cellEditorPopup: isTouchDevice,
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
-        headerClass: 'excel-col-header excel-num-header',
+        headerClass: 'excel-col-header excel-num-header excel-editable-header',
         valueFormatter: (params) => amountFormatter(params.value),
       },
       {
-        field: 'theoreticalGross',
-        headerName: translate('grid.theoreticalGross'),
+        field: 'difference',
+        headerName: translate('grid.difference'),
         editable: false,
-        flex: 1,
-        minWidth: 130,
+        width: 110,
         type: 'numericColumn',
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
-        headerClass: 'excel-col-header excel-num-header',
+        headerClass: 'excel-col-header excel-num-header excel-calc-header',
         valueFormatter: (params) => amountFormatter(params.value),
+      },
+      {
+        field: 'status',
+        headerName: translate('grid.status'),
+        editable: false,
+        flex: 1,
+        minWidth: 140,
+        cellClassRules: {
+          ...selectionClassRules,
+          'status-exact': (params) => params.data?.status === 'exact',
+          'status-within': (params) => params.data?.status === 'within_tolerance',
+          'status-out': (params) => params.data?.status === 'out_of_tolerance',
+        },
+        headerClass: 'excel-col-header excel-calc-header',
+        valueFormatter: (params) =>
+          params.data ? statusLabel(params.data.status, translate) : '',
       },
     ],
     [amountFormatter, amountParser, isTouchDevice, selectionClassRules, translate],
@@ -436,8 +472,8 @@ export function InvoiceGrid() {
         suppressRowClickSelection
         alwaysShowHorizontalScroll
         suppressMovableColumns
-        rowHeight={isTouchDevice ? 40 : 24}
-        headerHeight={isTouchDevice ? 36 : 26}
+        rowHeight={isTouchDevice ? 40 : 28}
+        headerHeight={isTouchDevice ? 36 : 32}
         className={themeClass}
         domLayout="normal"
       />

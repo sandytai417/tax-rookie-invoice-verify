@@ -8,28 +8,35 @@
     "tolerance": "Tolerance",
     "language": "Language",
     "theme": "Theme",
-    "importExcel": "Import Excel"
+    "importExcel": "Import Excel / .xlsx",
+    "pasteClipboard": "Paste (Ctrl+V) from Clipboard",
+    "customRate": "Custom rate",
+    "customTolerance": "Custom",
+    "tip": "Enter data in Net, Tax, or Total columns. Other columns are calculated automatically.",
+    "pasteEmpty": "Clipboard is empty.",
+    "pasteFailed": "Unable to read clipboard. Paste directly into the grid with Ctrl+V."
   },
   "summary": {
-    "rowCount": "Rows",
-    "netTotal": "Net Total",
-    "taxTotal": "Tax Total",
-    "grossTotal": "Gross Total",
-    "anomalies": "Anomalies"
+    "rowCount": "Items",
+    "netTotal": "Net Sum",
+    "taxTotal": "Tax Sum",
+    "grossTotal": "Total",
+    "anomalies": "Errors"
   },
   "grid": {
     "total": "Total",
-    "net": "A. Net",
-    "tax": "B. Tax",
-    "theoreticalNet": "C. Theoretical Net",
-    "theoreticalTax": "D. Theoretical Tax",
-    "gross": "E. Gross",
-    "theoreticalGross": "F. Theoretical Gross"
+    "net": "Net Amount",
+    "tax": "Tax",
+    "theoreticalNet": "Expected Net",
+    "theoreticalTax": "Expected Tax",
+    "gross": "Total",
+    "difference": "Difference",
+    "status": "Status"
   },
   "status": {
-    "exact": "Exact match",
-    "within_tolerance": "Within tolerance",
-    "out_of_tolerance": "Out of tolerance",
+    "exact": "Match",
+    "within_tolerance": "Within Tolerance",
+    "out_of_tolerance": "Out of Tolerance",
     "incomplete": "Incomplete",
     "empty": "Empty",
     "total": "Total"
@@ -87,10 +94,15 @@
     "mailtoSubject": "Tax Rookie Invoice Verify Feedback"
   },
   "footer": {
-    "privacy": "All data is processed locally in your browser. Nothing is uploaded or stored."
+    "privacy": "All data is processed locally in your browser. Nothing is uploaded or stored.",
+    "workflow": "Workflow",
+    "stepImport": "Import Excel",
+    "stepEnter": "Enter data",
+    "stepCheck": "Check results",
+    "verify": "Verify"
   },
   "empty": {
-    "hint": "Row 1 is totals. Fill A/B/E; C=B−B/(1+rate), D=A×rate, F=C+D. Row color shows status (green=exact, yellow=tolerance, red=anomaly)."
+    "hint": "Tap Net, Tax, or Total to enter values."
   },
   "units": {
     "percent": "%"

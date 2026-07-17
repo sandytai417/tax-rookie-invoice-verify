@@ -28,6 +28,8 @@ export interface ComputedInvoiceRow extends InvoiceRow {
   theoreticalTax: number | null
   /** F: theoretical gross = C + D */
   theoreticalGross: number | null
+  /** Primary difference: gross − theoreticalGross (fallback tax/net) */
+  difference: number | null
   status: RowStatus
   isTotalRow?: boolean
 }
