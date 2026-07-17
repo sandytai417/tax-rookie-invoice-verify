@@ -442,6 +442,7 @@ export function InvoiceGrid() {
       const text = event.clipboardData.getData('text/plain')
       if (!text.trim()) return
       event.preventDefault()
+      event.stopPropagation()
 
       const matrix = parseClipboardMatrix(text)
       if (matrix.length === 0) return
@@ -455,7 +456,7 @@ export function InvoiceGrid() {
   return (
     <div
       className="grid-panel excel-grid-shell"
-      onPaste={handlePaste}
+      onPasteCapture={handlePaste}
       onMouseUp={stopDragSelection}
       onMouseLeave={stopDragSelection}
       onTouchEnd={stopDragSelection}

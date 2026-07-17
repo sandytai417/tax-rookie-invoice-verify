@@ -47,6 +47,7 @@ function MobileAmountInput({
       type="text"
       inputMode="decimal"
       enterKeyHint="done"
+      data-field={field}
       value={draft}
       aria-label={label}
       onFocus={(event) => {
@@ -89,9 +90,13 @@ export function MobileInvoiceTable() {
       }
 
       event.preventDefault()
+      event.stopPropagation()
       const matrix = parseClipboardMatrix(text)
       if (matrix.length === 0) return
-      applyPaste(matrix, 1, 'net')
+
+      const field =
+        target instanceof HTMLInputElement ? target.dataset.field ?? 'net' : 'net'
+      applyPaste(matrix, 1, field)
     },
     [applyPaste],
   )
@@ -131,7 +136,7 @@ export function MobileInvoiceTable() {
   }
 
   return (
-    <div className="mobile-table-wrap" onPaste={handlePaste}>
+    <div className="mobile-table-wrap" onPasteCapture={handlePaste}>
       <table className="mobile-table">
         <thead>
           <tr>

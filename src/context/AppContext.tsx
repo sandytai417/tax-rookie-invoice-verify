@@ -18,6 +18,7 @@ import {
   getToleranceValue,
   summarizeRows,
 } from '@/lib/verification'
+import { mapClipboardRowToUpdates } from '@/lib/paste'
 import type {
   ComputedInvoiceRow,
   EditableInvoiceField,
@@ -26,7 +27,7 @@ import type {
   ThemeMode,
   TolerancePreset,
 } from '@/types'
-import { PASTE_COLUMN_ORDER, isEditableInvoiceField } from '@/types'
+import { isEditableInvoiceField } from '@/types'
 
 const LOCALE_KEY = 'tri-locale'
 const THEME_KEY = 'tri-theme'
@@ -180,50 +181,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
     (matrix: string[][], startRowIndex: number, startColumn: string) => {
       setRows((current) => {
         const next = [...current]
-        const isSingleColumn = matrix.every((row) => row.length <= 1)
         // startRowIndex is display index (0 = total row); map to data rows
         const dataStart = Math.max(0, startRowIndex - 1)
-        const width = Math.max(0, ...matrix.map((row) => row.length))
-        if (width === 0) return current
-
-        const pasteStart = PASTE_COLUMN_ORDER.indexOf(
-          startColumn as (typeof PASTE_COLUMN_ORDER)[number],
-        )
-        const remainingPasteColumns =
-          pasteStart >= 0
-            ? PASTE_COLUMN_ORDER.slice(pasteStart)
-            : [...PASTE_COLUMN_ORDER]
-
-        const remainingEditable = remainingPasteColumns.filter(isEditableInvoiceField)
-        const singleTarget =
-          (isEditableInvoiceField(startColumn) ? startColumn : remainingEditable[0]) ?? 'net'
-
-        // Narrow pastes (e.g. 未稅/稅額/總價 only) map to editable fields.
-        // Wider pastes align to the on-screen column order and skip locked columns.
-        const useEditableOnly = width <= remainingEditable.length
 
         matrix.forEach((row, offset) => {
+          if (row.length === 0) return
           const targetIndex = dataStart + offset
           while (targetIndex >= next.length) next.push(createEmptyRow())
-          const target = next[targetIndex]
-          const updates: Partial<InvoiceRow> = {}
-
-          if (isSingleColumn) {
-            updates[singleTarget] = parseAmount(row[0] ?? '')
-          } else if (useEditableOnly) {
-            remainingEditable.forEach((editableField, columnIndex) => {
-              if (columnIndex >= row.length) return
-              updates[editableField] = parseAmount(row[columnIndex] ?? '')
-            })
-          } else {
-            remainingPasteColumns.forEach((columnId, columnIndex) => {
-              if (columnIndex >= row.length) return
-              if (!isEditableInvoiceField(columnId)) return
-              updates[columnId] = parseAmount(row[columnIndex] ?? '')
-            })
-          }
-
-          next[targetIndex] = { ...target, ...updates }
+          const updates = mapClipboardRowToUpdates(row, startColumn)
+          if (Object.keys(updates).length === 0) return
+          next[targetIndex] = { ...next[targetIndex], ...updates }
         })
         return ensureTrailingRows(next)
       })
