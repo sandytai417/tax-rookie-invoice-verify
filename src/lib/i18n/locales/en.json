@@ -73,7 +73,7 @@
     "previewTitle": "Preview data",
     "sheetLabel": "Worksheet",
     "mappingTitle": "Column mapping",
-    "mappingDesc": "Map net, tax, and gross columns.",
+    "mappingDesc": "Map net, tax, and gross columns. Theoretical columns are calculated and cannot be imported.",
     "notSpecified": "(Not specified)",
     "confirmTitle": "Confirm import",
     "errors": {
