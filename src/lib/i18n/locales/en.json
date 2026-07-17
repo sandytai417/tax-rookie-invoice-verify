@@ -23,13 +23,15 @@
     "anomalies": "Errors"
   },
   "grid": {
-    "total": "Total",
-    "net": "Net Amount",
-    "tax": "Tax",
-    "theoreticalNet": "Expected Net",
-    "theoreticalTax": "Expected Tax",
-    "gross": "Total",
-    "theoreticalGross": "Expected Total"
+    "total": "合計\nTotal",
+    "net": "未稅額\nNet",
+    "tax": "稅額\nTax",
+    "theoreticalNet": "理論未稅額\nExpected Net",
+    "theoreticalTax": "理論稅額\nExpected Tax",
+    "gross": "總價\nTotal",
+    "theoreticalGross": "理論總價\nExpected Total",
+    "difference": "差異\nDiff",
+    "issues": "問題\nIssue"
   },
   "status": {
     "exact": "Match",
@@ -98,7 +100,7 @@
   },
   "empty": {
     "hint": "Tap Net, Tax, or Total to enter values. Row colors: light green = match, light orange = within tolerance, light red = out of tolerance.",
-    "mobileScrollHint": "← Swipe to see Expected Total →  Row colors update as you type"
+    "mobileScrollHint": "← Swipe for Expected Total / Diff / Issue →  Out-of-tolerance shows e.g. Net>Expected Net"
   },
   "units": {
     "percent": "%"

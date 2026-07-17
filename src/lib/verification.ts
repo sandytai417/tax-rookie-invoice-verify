@@ -99,6 +99,84 @@ function computeDifference(
   return null
 }
 
+function describeMismatch(
+  actualLabelZh: string,
+  actualLabelEn: string,
+  expectedLabelZh: string,
+  expectedLabelEn: string,
+  actual: number,
+  expected: number,
+): string {
+  if (actual > expected) {
+    return `${actualLabelZh}>${expectedLabelZh} / ${actualLabelEn}>${expectedLabelEn}`
+  }
+  if (actual < expected) {
+    return `${actualLabelZh}<${expectedLabelZh} / ${actualLabelEn}<${expectedLabelEn}`
+  }
+  return `${actualLabelZh}≠${expectedLabelZh} / ${actualLabelEn}≠${expectedLabelEn}`
+}
+
+function collectIssues(
+  row: InvoiceRow,
+  theoreticalNet: number | null,
+  theoreticalTax: number | null,
+  theoreticalGross: number | null,
+  tolerance: number,
+): string[] {
+  const issues: string[] = []
+
+  const pairs: Array<{
+    actual: number | null
+    expected: number | null
+    actualZh: string
+    actualEn: string
+    expectedZh: string
+    expectedEn: string
+  }> = [
+    {
+      actual: row.net,
+      expected: theoreticalNet,
+      actualZh: '未稅額',
+      actualEn: 'Net',
+      expectedZh: '理論未稅額',
+      expectedEn: 'Expected Net',
+    },
+    {
+      actual: row.tax,
+      expected: theoreticalTax,
+      actualZh: '稅額',
+      actualEn: 'Tax',
+      expectedZh: '理論稅額',
+      expectedEn: 'Expected Tax',
+    },
+    {
+      actual: row.gross,
+      expected: theoreticalGross,
+      actualZh: '總價',
+      actualEn: 'Total',
+      expectedZh: '理論總價',
+      expectedEn: 'Expected Total',
+    },
+  ]
+
+  for (const pair of pairs) {
+    if (pair.actual === null || pair.expected === null) continue
+    if (withinTolerance(pair.actual, pair.expected, tolerance)) continue
+    issues.push(
+      describeMismatch(
+        pair.actualZh,
+        pair.actualEn,
+        pair.expectedZh,
+        pair.expectedEn,
+        pair.actual,
+        pair.expected,
+      ),
+    )
+  }
+
+  return issues
+}
+
 export function computeRow(
   row: InvoiceRow,
   index: number,
@@ -109,6 +187,11 @@ export function computeRow(
   const theoreticalTax = computeTheoreticalTax(row.net, taxRatePercent)
   const theoreticalGross = computeTheoreticalGross(theoreticalNet, theoreticalTax)
   const difference = computeDifference(row, theoreticalNet, theoreticalTax, theoreticalGross)
+  const status = resolveStatus(row, theoreticalNet, theoreticalTax, theoreticalGross, tolerance)
+  const issues =
+    status === 'out_of_tolerance'
+      ? collectIssues(row, theoreticalNet, theoreticalTax, theoreticalGross, tolerance)
+      : []
 
   return {
     ...row,
@@ -117,7 +200,8 @@ export function computeRow(
     theoreticalTax,
     theoreticalGross,
     difference,
-    status: resolveStatus(row, theoreticalNet, theoreticalTax, theoreticalGross, tolerance),
+    issues,
+    status,
   }
 }
 
@@ -178,6 +262,7 @@ export function createTotalRow(rows: ComputedInvoiceRow[]): ComputedInvoiceRow {
     theoreticalTax,
     theoreticalGross,
     difference,
+    issues: [],
     status: 'total',
     isTotalRow: true,
   }

@@ -427,11 +427,37 @@ textarea {
   background: #f3f4f6 !important;
 }
 
+.mobile-th-zh {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.mobile-th-en {
+  display: block;
+  font-size: 9px;
+  font-weight: 500;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+.mobile-issues {
+  display: block;
+  padding: 4px 6px;
+  font-size: 10px;
+  line-height: 1.35;
+  color: #b91c1c;
+  white-space: normal;
+  text-align: left;
+}
+
 .mobile-end-col {
   position: sticky;
   right: 0;
   z-index: 3;
-  min-width: 84px !important;
+  min-width: 120px !important;
+  max-width: 160px;
   background: #fff7ed;
   box-shadow: -3px 0 6px rgba(15, 23, 42, 0.08);
   font-weight: 600;

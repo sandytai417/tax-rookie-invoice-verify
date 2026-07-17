@@ -115,32 +115,51 @@ export function MobileInvoiceTable() {
     return <span className="mobile-readonly">{formatAmount(value, numberLocale)}</span>
   }
 
+  function renderIssues(row: ComputedInvoiceRow) {
+    if (row.isTotalRow || row.issues.length === 0) return null
+    return <span className="mobile-issues">{row.issues.join('；')}</span>
+  }
+
+  function bilingualHeader(key: string) {
+    const [zh, en] = translate(key).split('\n')
+    return (
+      <>
+        <span className="mobile-th-zh">{zh}</span>
+        {en ? <span className="mobile-th-en">{en}</span> : null}
+      </>
+    )
+  }
+
   return (
     <div className="mobile-table-wrap" onPaste={handlePaste}>
       <table className="mobile-table">
         <thead>
           <tr>
             <th className="mobile-sticky-col">#</th>
-            <th>{translate('grid.net')}</th>
-            <th>{translate('grid.tax')}</th>
-            <th>{translate('grid.theoreticalNet')}</th>
-            <th>{translate('grid.theoreticalTax')}</th>
-            <th>{translate('grid.gross')}</th>
-            <th className="mobile-end-col">{translate('grid.theoreticalGross')}</th>
+            <th>{bilingualHeader('grid.net')}</th>
+            <th>{bilingualHeader('grid.tax')}</th>
+            <th>{bilingualHeader('grid.theoreticalNet')}</th>
+            <th>{bilingualHeader('grid.theoreticalTax')}</th>
+            <th>{bilingualHeader('grid.gross')}</th>
+            <th>{bilingualHeader('grid.theoreticalGross')}</th>
+            <th>{bilingualHeader('grid.difference')}</th>
+            <th className="mobile-end-col">{bilingualHeader('grid.issues')}</th>
           </tr>
         </thead>
         <tbody>
           {computedRows.map((row) => (
             <tr key={row.id} className={statusClass(row.status)}>
               <td className="mobile-sticky-col">
-                {row.isTotalRow ? translate('grid.total') : row.index}
+                {row.isTotalRow ? translate('grid.total').split('\n')[0] : row.index}
               </td>
               <td>{renderInput(row, 'net')}</td>
               <td>{renderInput(row, 'tax')}</td>
               <td>{renderReadonly(row.theoreticalNet)}</td>
               <td>{renderReadonly(row.theoreticalTax)}</td>
               <td>{renderInput(row, 'gross')}</td>
-              <td className="mobile-end-col">{renderReadonly(row.theoreticalGross)}</td>
+              <td>{renderReadonly(row.theoreticalGross)}</td>
+              <td>{renderReadonly(row.difference)}</td>
+              <td className="mobile-end-col">{renderIssues(row)}</td>
             </tr>
           ))}
         </tbody>

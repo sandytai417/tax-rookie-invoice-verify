@@ -30,6 +30,8 @@ export interface ComputedInvoiceRow extends InvoiceRow {
   theoreticalGross: number | null
   /** Primary difference: gross − theoreticalGross (fallback tax/net) */
   difference: number | null
+  /** Human-readable mismatch details when out of tolerance */
+  issues: string[]
   status: RowStatus
   isTotalRow?: boolean
 }

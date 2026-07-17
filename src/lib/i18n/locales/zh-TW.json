@@ -23,13 +23,15 @@
     "anomalies": "異常"
   },
   "grid": {
-    "total": "合計",
-    "net": "未稅額",
-    "tax": "稅額",
-    "theoreticalNet": "理論未稅額",
-    "theoreticalTax": "理論稅額",
-    "gross": "總價",
-    "theoreticalGross": "理論總價"
+    "total": "合計\nTotal",
+    "net": "未稅額\nNet",
+    "tax": "稅額\nTax",
+    "theoreticalNet": "理論未稅額\nExpected Net",
+    "theoreticalTax": "理論稅額\nExpected Tax",
+    "gross": "總價\nTotal",
+    "theoreticalGross": "理論總價\nExpected Total",
+    "difference": "差異\nDiff",
+    "issues": "問題\nIssue"
   },
   "status": {
     "exact": "完全一致",
@@ -98,7 +100,7 @@
   },
   "empty": {
     "hint": "點未稅額／稅額／總價即可輸入。超出容差列為淺紅，容差內為淺橘，一致為淺綠。",
-    "mobileScrollHint": "← 左右滑動可看「理論總價」→  輸入後列底色會變淺綠／淺橘／淺紅"
+    "mobileScrollHint": "← 左右滑動可看理論總價／差異／問題 →  超出容差會標出如：未稅額>理論未稅額"
   },
   "units": {
     "percent": "%"

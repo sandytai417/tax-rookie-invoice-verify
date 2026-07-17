@@ -44,6 +44,8 @@ const GRID_COLUMN_IDS = [
   'theoreticalTax',
   'gross',
   'theoreticalGross',
+  'difference',
+  'issues',
 ] as const
 
 function coordFromEvent(
@@ -209,13 +211,39 @@ export function InvoiceGrid() {
         field: 'theoreticalGross',
         headerName: translate('grid.theoreticalGross'),
         editable: false,
-        flex: 1,
-        minWidth: 120,
+        width: 120,
         type: 'numericColumn',
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
         headerClass: 'excel-col-header excel-num-header excel-calc-header',
         valueFormatter: (params) => amountFormatter(params.value),
+      },
+      {
+        field: 'difference',
+        headerName: translate('grid.difference'),
+        editable: false,
+        width: 90,
+        type: 'numericColumn',
+        cellClassRules: selectionClassRules,
+        cellStyle: { textAlign: 'right' },
+        headerClass: 'excel-col-header excel-num-header excel-calc-header',
+        valueFormatter: (params) => amountFormatter(params.value),
+      },
+      {
+        field: 'issues',
+        headerName: translate('grid.issues'),
+        editable: false,
+        flex: 1,
+        minWidth: 180,
+        cellClassRules: selectionClassRules,
+        headerClass: 'excel-col-header excel-calc-header',
+        wrapText: true,
+        autoHeight: true,
+        valueFormatter: (params) => {
+          if (!params.data || params.data.isTotalRow) return ''
+          const issues = params.data.issues ?? []
+          return issues.length > 0 ? issues.join('；') : ''
+        },
       },
     ],
     [amountFormatter, amountParser, isTouchDevice, selectionClassRules, translate],
@@ -229,6 +257,8 @@ export function InvoiceGrid() {
       suppressHeaderMenuButton: true,
       wrapText: false,
       autoHeight: false,
+      wrapHeaderText: true,
+      autoHeaderHeight: true,
       headerClass: 'excel-col-header',
       headerClassRules: {
         'col-selected': (params: HeaderClassParams<ComputedInvoiceRow>) =>
