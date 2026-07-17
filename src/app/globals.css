@@ -95,6 +95,13 @@ textarea {
   letter-spacing: -0.01em;
 }
 
+.brand-title-zh {
+  margin-top: 1px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
 .brand-subtitle {
   color: var(--muted);
   font-size: 11px;
@@ -925,6 +932,11 @@ textarea {
     display: none;
   }
 
+  .brand-title-zh {
+    display: block;
+    font-size: 12px;
+  }
+
   .header-tip {
     display: none;
   }
@@ -1090,7 +1102,15 @@ textarea {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 28vw;
+    max-width: 42vw;
+  }
+
+  .brand-title-zh {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 42vw;
   }
 
   .header-actions {

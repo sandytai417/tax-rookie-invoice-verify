@@ -3,9 +3,9 @@ import { Providers } from '@/components/Providers'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Tax Rookie | Invoice Verify',
+  title: 'Tax Rookie｜報稅菜鳥 | Invoice Verify',
   description:
-    'Invoice verification tool for accountants. Verify net, tax, and gross amounts locally in your browser.',
+    '報稅菜鳥｜發票驗算工具。Verify net, tax, and gross amounts locally in your browser.',
   other: {
     'Cache-Control': 'no-cache, no-store, must-revalidate',
     Pragma: 'no-cache',

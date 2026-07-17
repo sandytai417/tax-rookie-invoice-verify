@@ -48,7 +48,7 @@ export function Header() {
         <div className="brand-block">
           <div>
             <div className="brand-title">{translate('brand.title')}</div>
-            <div className="brand-subtitle">{translate('brand.subtitle')}</div>
+            <div className="brand-title-zh">{translate('brand.titleZh')}</div>
           </div>
         </div>
 
