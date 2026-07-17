@@ -383,8 +383,59 @@ textarea {
 .ag-theme-excel-dark .ag-header-cell,
 .ag-theme-excel .ag-cell,
 .ag-theme-excel-dark .ag-cell {
-  border-right: 1px solid var(--ag-border-color);
-  border-bottom: 1px solid var(--ag-border-color);
+  border-right: 1px solid var(--ag-border-color) !important;
+  border-bottom: 1px solid var(--ag-border-color) !important;
+  /* Keep solid grid lines even when status row backgrounds are painted. */
+  box-shadow: inset -1px 0 0 0 var(--ag-border-color), inset 0 -1px 0 0 var(--ag-border-color);
+}
+
+.ag-theme-excel .ag-row,
+.ag-theme-excel-dark .ag-row {
+  border-bottom: 1px solid var(--ag-border-color) !important;
+}
+
+.ag-theme-excel .ag-row-border,
+.ag-theme-excel-dark .ag-row-border {
+  display: none;
+}
+
+.excel-grid-shell .ag-cell {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.excel-grid-shell .ag-cell-inline-editing,
+.excel-grid-shell .ag-cell-inline-editing * {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default;
+}
+
+.excel-grid-shell .ag-cell-inline-editing input,
+.excel-grid-shell .ag-cell-editor input,
+.excel-grid-shell .ag-popup-editor input {
+  width: 100%;
+  height: 100%;
+  min-height: 36px;
+  border: 2px solid #217346 !important;
+  outline: none;
+  background: #fff;
+  color: #000;
+  font-size: 16px !important;
+  padding: 2px 6px;
+  box-sizing: border-box;
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+
+.excel-grid-shell .ag-popup-editor {
+  z-index: 50;
+  background: #fff;
+  border: 1px solid #217346;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  min-width: 140px;
+  padding: 4px;
 }
 
 .ag-theme-excel .excel-col-header,
@@ -455,14 +506,6 @@ textarea {
   justify-content: flex-end;
 }
 
-.excel-grid-shell .ag-cell {
-  user-select: none;
-}
-
-.excel-grid-shell .ag-cell-inline-editing input {
-  user-select: text;
-}
-
 .ag-theme-excel .row-status-exact .ag-cell,
 .ag-theme-excel-dark .row-status-exact .ag-cell {
   background-color: rgba(34, 197, 94, 0.18) !important;
@@ -526,7 +569,20 @@ textarea {
 
   .excel-grid-shell {
     height: 100%;
+    /* Allow taps to reach cell editors; pan only on the scroll viewport. */
+    touch-action: auto;
+  }
+
+  .excel-grid-shell .ag-body-viewport,
+  .excel-grid-shell .ag-center-cols-viewport {
+    -webkit-overflow-scrolling: touch;
     touch-action: pan-x pan-y;
+  }
+
+  .excel-grid-shell .ag-cell {
+    /* Larger tap targets; avoid 300ms / callout interfering with edit. */
+    min-height: 40px;
+    touch-action: manipulation;
   }
 
   .excel-grid-shell .ag-root-wrapper {
@@ -538,6 +594,12 @@ textarea {
   .excel-grid-shell .ag-body-horizontal-scroll,
   .excel-grid-shell .ag-body-vertical-scroll {
     opacity: 1;
+  }
+
+  .excel-grid-shell .ag-cell-inline-editing input,
+  .excel-grid-shell .ag-cell-editor input {
+    font-size: 16px !important;
+    min-height: 38px;
   }
 
   .grid-hint {

@@ -151,6 +151,7 @@ export function InvoiceGrid() {
         width: 120,
         type: 'numericColumn',
         valueParser: amountParser,
+        cellEditorPopup: isTouchDevice,
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
         headerClass: 'excel-col-header excel-num-header',
@@ -163,6 +164,7 @@ export function InvoiceGrid() {
         width: 110,
         type: 'numericColumn',
         valueParser: amountParser,
+        cellEditorPopup: isTouchDevice,
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
         headerClass: 'excel-col-header excel-num-header',
@@ -197,6 +199,7 @@ export function InvoiceGrid() {
         width: 120,
         type: 'numericColumn',
         valueParser: amountParser,
+        cellEditorPopup: isTouchDevice,
         cellClassRules: selectionClassRules,
         cellStyle: { textAlign: 'right' },
         headerClass: 'excel-col-header excel-num-header',
@@ -215,7 +218,7 @@ export function InvoiceGrid() {
         valueFormatter: (params) => amountFormatter(params.value),
       },
     ],
-    [amountFormatter, amountParser, selectionClassRules, translate],
+    [amountFormatter, amountParser, isTouchDevice, selectionClassRules, translate],
   )
 
   const defaultColDef = useMemo<ColDef>(
@@ -264,7 +267,9 @@ export function InvoiceGrid() {
 
   const onCellMouseDown = useCallback(
     (event: CellMouseDownEvent<ComputedInvoiceRow>) => {
-      if (event.event instanceof MouseEvent && event.event.button !== 0) return
+      const nativeEvent = event.event
+      if (nativeEvent instanceof MouseEvent && nativeEvent.button !== 0) return
+
       const coord = coordFromEvent(event.rowIndex, event.colDef.field)
       if (!coord) return
 
@@ -273,16 +278,24 @@ export function InvoiceGrid() {
         return
       }
 
-      dragSelectingRef.current = true
+      // On touch, avoid drag-select so single tap can open the cell editor.
+      const isTouch =
+        isTouchDevice ||
+        (nativeEvent instanceof PointerEvent && nativeEvent.pointerType === 'touch') ||
+        (typeof TouchEvent !== 'undefined' && nativeEvent instanceof TouchEvent)
 
-      if (event.event instanceof MouseEvent && event.event.shiftKey && selection) {
+      if (!isTouch) {
+        dragSelectingRef.current = true
+      }
+
+      if (nativeEvent instanceof MouseEvent && nativeEvent.shiftKey && selection) {
         updateSelection({ mode: 'cells', anchor: selection.anchor, focus: coord })
         return
       }
 
       updateSelection(createSelection(coord))
     },
-    [selection, updateSelection],
+    [isTouchDevice, selection, updateSelection],
   )
 
   const onCellMouseOver = useCallback(
@@ -354,6 +367,21 @@ export function InvoiceGrid() {
     [updateSelection],
   )
 
+  const onCellEditingStarted = useCallback(() => {
+    // Defer so AG Grid has mounted the editor input (critical on iOS).
+    window.setTimeout(() => {
+      const input = document.querySelector<HTMLInputElement>(
+        '.ag-cell-inline-editing input, .ag-cell-editor input, .ag-popup-editor input',
+      )
+      if (!input) return
+      input.setAttribute('inputmode', 'decimal')
+      input.setAttribute('enterkeyhint', 'done')
+      input.style.fontSize = '16px'
+      input.focus({ preventScroll: true })
+      input.select()
+    }, 0)
+  }, [])
+
   const handlePaste = useCallback(
     (event: React.ClipboardEvent<HTMLDivElement>) => {
       const text = event.clipboardData.getData('text/plain')
@@ -392,6 +420,7 @@ export function InvoiceGrid() {
         onCellClicked={onCellClicked}
         onColumnHeaderClicked={onColumnHeaderClicked}
         onCellKeyDown={onCellKeyDown}
+        onCellEditingStarted={onCellEditingStarted}
         onCellValueChanged={(event) => {
           if (!event.data || event.data.isTotalRow || !event.colDef.field) return
           const field = event.colDef.field
@@ -400,15 +429,15 @@ export function InvoiceGrid() {
             event.newValue === '' || event.newValue === undefined ? null : (event.newValue as number | null)
           updateRow(event.data.id, field as EditableInvoiceField, value)
         }}
-        stopEditingWhenCellsLoseFocus
-        singleClickEdit={isTouchDevice}
+        stopEditingWhenCellsLoseFocus={!isTouchDevice}
+        singleClickEdit
         enterNavigatesVertically
         enterNavigatesVerticallyAfterEdit
         suppressRowClickSelection
         alwaysShowHorizontalScroll
         suppressMovableColumns
-        rowHeight={22}
-        headerHeight={24}
+        rowHeight={isTouchDevice ? 40 : 24}
+        headerHeight={isTouchDevice ? 36 : 26}
         className={themeClass}
         domLayout="normal"
       />
