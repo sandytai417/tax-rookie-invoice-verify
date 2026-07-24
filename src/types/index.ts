@@ -22,9 +22,9 @@ export interface InvoiceRow {
 
 export interface ComputedInvoiceRow extends InvoiceRow {
   index: number
-  /** C: theoretical net = B - B/(1+rate) */
+  /** C: theoretical net = B ÷ rate */
   theoreticalNet: number | null
-  /** D: theoretical tax = A * rate */
+  /** D: theoretical tax = A × rate */
   theoreticalTax: number | null
   /** F: theoretical gross = C + D */
   theoreticalGross: number | null

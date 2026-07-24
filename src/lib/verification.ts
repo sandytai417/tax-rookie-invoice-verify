@@ -22,11 +22,16 @@ function rateDecimal(taxRatePercent: number): number {
   return taxRatePercent / 100
 }
 
-/** C: 理論未稅額 = B - B/(1+稅率) */
+/**
+ * C: 理論未稅額 = B ÷ 稅率
+ * 由稅額反推未稅額。舊公式 B−B/(1+r) 等價於把稅額當含稅總額拆稅，結果會錯。
+ * 稅率為 0 時無法由稅額反推，回傳 null。
+ */
 export function computeTheoreticalNet(tax: number | null, taxRatePercent: number): number | null {
   if (tax === null) return null
   const rate = rateDecimal(taxRatePercent)
-  return round2(tax - tax / (1 + rate))
+  if (rate === 0) return null
+  return round2(tax / rate)
 }
 
 /** D: 理論稅額 = A * 稅率 */
